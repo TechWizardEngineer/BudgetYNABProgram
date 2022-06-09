@@ -4,6 +4,12 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 
+ROOT_PATH = os.path.dirname(
+    (os.sep).join(os.path.abspath(__file__).split(os.sep)))
+sys.path.insert(1, ROOT_PATH)
+
+import root
+
 # Processing files
 import re
 import chardet
@@ -15,12 +21,12 @@ class YnabImportProgram():
   :Author: Camila Martinez <kamynz16@gmail.com>
   """
 
-  def __init__(self, filename: str):
-    self.path_import_from_bank = data_path + export_from_bank
-    self.path_to_export_csv = path_to_export_csv
+  def __init__(self, path_data: str, path_export: str):
+    self.path_data = path_data
+    self.path_export = path_export
 
   def get_list_files(self):
-    files = os.listdir(data_path+export_from_bank)
+    files = os.listdir(self.path_data)
     return(files)
 
   def get_encoding(self, filepath_complete: str):
@@ -29,7 +35,6 @@ class YnabImportProgram():
       print(f'INFO: The encoding of file for correct importation is {var_encoding}')
     return(var_encoding)
 
-  @staticmethod
   def process_encoding_by_file(self):
     dict_encoding_by_file = {}
     files = self.get_list_files()
@@ -37,7 +42,7 @@ class YnabImportProgram():
       match1 = re.search("-",str(filename))
       match2 = filename.split(".")[1]
       if (match1 and match2=="txt"):
-        filepath_complete=str(data_path+export_from_bank+"/"+filename)
+        filepath_complete=str(self.path_data+"/"+filename)
         #Use get_encoding function and filling dictionary
         dict_encoding_by_file[filename] = self.get_encoding(filepath_complete)
     return(dict_encoding_by_file)
@@ -50,7 +55,7 @@ class YnabImportProgram():
     list_desire_columns=['Date','Oficina','Referencia','Memo','Amount']
     dfcopy_transform = dfcopy[list_desire_columns]
     print(f'PROCESS: Executing info() function')
-    print(dfcopy.info())
+    print(dfcopy_transform.info())
 
     return(dfcopy_transform)
 
@@ -62,13 +67,13 @@ class YnabImportProgram():
     filename_to_export = filename.split(".txt")[0]+"_pfile_"+date_range_to_export
 
     if(ext == ".xlsx"):
-      filepath_to_export_excel = data_path+"/ImportTrials_Budget_Program/"+filename_to_export+".xlsx"
+      filepath_to_export_excel = self.path_export+filename_to_export+".xlsx"
       sheet_name="_pfile_"+date_range_to_export
       print(f'INFO: Exported file is in: {filepath_to_export_excel}')
       dfcopy_transform.to_excel(filepath_to_export_excel,sheet_name=sheet_name,index=False)
 
     if(ext == ".csv"):
-      filepath_to_export_csv = data_path+"/ImportTrials_Budget_Program/"+filename_to_export+".csv"
+      filepath_to_export_csv = self.path_export+filename_to_export+".csv"
       print(f'INFO: Exported file is in: {filepath_to_export_csv}')
       dfcopy_transform.to_csv(filepath_to_export_csv,index=False,index_label=False)
 
@@ -85,7 +90,7 @@ class YnabImportProgram():
       if match1 and match2=="txt":
         print("INFO: Has condition 1 and assumes file is tabulated")
 
-        filepath = str(data_path+export_from_bank+"/"+filename)
+        filepath = str(self.path_data+"/"+filename)
         try:
           df = pd.read_csv(filepath,sep="\t",encoding="ISO-8859-1",parse_dates=["FECHA"])
           print(df.columns) #checking columns names
@@ -103,13 +108,11 @@ class YnabImportProgram():
 if __name__ == "__main__":
 
   # Running locally
+  print(root.DIR_DATA)
+  print(root.DIR_DATA_RAW)
 
-  base_dir = "/content/gdrive/My Drive/Colab Notebooks/My_projects/Budget_program/"
-  data_path = base_dir + "project/data/"
-  export_from_bank = "Export_from_Bank"
-  path_to_export_csv = "/content/gdrive/My Drive/Colab Notebooks/My_projects/Budget_program/project/data//ImportTrials_Budget_Program/"
-  budget_obj = YnabImportProgram(path_to_export_csv)
-  dict_encoding_by_file = budget_obj.get_encoding
+  budget_obj = YnabImportProgram(root.DIR_DATA_RAW,root.DIR_DATA_ANALYTICS)
+  #budget_obj.process_encoding_by_file()
   budget_obj.process_structure_change()
 
 
