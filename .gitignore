@@ -1,5 +1,6 @@
 # Ignore data
-data/*
+app/data/raw/*
+app/data/analytics/*
 
 # MacOS
 .DS_Store
