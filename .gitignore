@@ -1,10 +1,14 @@
+# Ignore data
+data/raw/*
+data/analytics/*
+
+# MacOS
+.DS_Store
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
-
-# MacOS
-.DS_Store
 
 # C extensions
 *.so
