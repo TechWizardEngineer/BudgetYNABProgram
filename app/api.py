@@ -13,9 +13,20 @@ Write a path operation function (like def root(): ... above).
 Run the development server (like uvicorn main:app --reload).
 """
 #from typing import Optional
+import os
+import sys
+
+ROOT_PATH = os.path.dirname(
+    (os.sep).join(os.path.abspath(__file__).split(os.sep)))
+sys.path.insert(1, ROOT_PATH)
+
+import root
+
 from fastapi import FastAPI
+from typing import Optional
 from starlette.responses import FileResponse, HTMLResponse
 import pandas as pd
+from budget_program import YnabImportProgram
 #import Model
 
 import datetime
@@ -23,7 +34,6 @@ import json
 
 #create an app instance
 app_ynab = FastAPI(title="My Budget Program for YNAB")
-
 
 ###---------------------------------------------------
 ## Loads the home for the api
@@ -36,6 +46,93 @@ app_ynab = FastAPI(title="My Budget Program for YNAB")
 async def read_root():
     return FileResponse('./resources/index.html')
 
+###---------------------------------------------------
+## XXX
+## Params:
+## XXX
+## returns:
+## XXX
+###---------------------------------------------------
+@app_ynab.get("/structure_change/")
+async def process_structure_change():
+    #Unless user change the input path of data AND export path, it will be from root
+    path_data= root.DIR_DATA_RAW
+    path_export = root.DIR_DATA_ANALYTICS
+
+    budget_obj = YnabImportProgram(root.DIR_DATA_RAW,root.DIR_DATA_ANALYTICS)
+    return(budget_obj.process_structure_change())
+
+@app_ynab.get("/get-changed/{file_id}")
+def verify_changed_by_file(file_id: str):
+    path_data= root.DIR_DATA_RAW
+    path_export = root.DIR_DATA_ANALYTICS
+
+    budget_obj = YnabImportProgram(root.DIR_DATA_RAW,root.DIR_DATA_ANALYTICS)
+    dict_transform = budget_obj.process_structure_change()
+    return(dict_transform[file_id])
+
+###---------------------------------------------------
+## XXX
+## Params:
+## XXX
+## returns:
+## XXX
+###---------------------------------------------------
+@app_ynab.get("/encoding/")
+async def process_encoding():
+    #Unless user change the input path of data AND export path, it will be from root
+    path_data= root.DIR_DATA_RAW
+    path_export = root.DIR_DATA_ANALYTICS
+
+    budget_obj = YnabImportProgram(root.DIR_DATA_RAW,root.DIR_DATA_ANALYTICS)
+    return(budget_obj.process_encoding_by_file())
+
+@app_ynab.get("/get-encoding/{file_id}")
+def get_encoding_by_file(file_id: str):
+    path_data= root.DIR_DATA_RAW
+    path_export = root.DIR_DATA_ANALYTICS
+
+    budget_obj = YnabImportProgram(root.DIR_DATA_RAW,root.DIR_DATA_ANALYTICS)
+    dict_encoding = budget_obj.process_encoding_by_file()
+    return(dict_encoding[file_id])
+
+
+###---------------------------------------------------
+## Reading input path (raw data) to execute YNAB Program
+## Params:
+## None
+## returns:
+## Home land page
+###---------------------------------------------------
+@app_ynab.get("/path-data/")
+async def get_path_data():
+    #Unless user change the input path of data AND export path, it will be from root
+    path_data= root.DIR_DATA_RAW
+    path_export = root.DIR_DATA_ANALYTICS
+    return({'INFO: Getting data from and exporting into': [path_data, path_export]})
+
+###---------------------------------------------------
+## Creating (POST) input path (raw data) and export path to execute YNAB Program
+## Params:
+## None
+## returns:
+## Home land page
+###---------------------------------------------------
+@app_ynab.post("/create-paths/")
+async def create_paths(path_data: Optional[str] = None,
+path_export: Optional[str] = None):
+    #Unless user change the input path of data AND export path, it will be from root
+    path_data= root.DIR_DATA_RAW
+    path_export = root.DIR_DATA_ANALYTICS
+    return({'INFO: Getting data from': [path_data, path_export]})
+
+###---------------------------------------------------
+## XXX
+## Params:
+## XXX
+## returns:
+## XXX
+###---------------------------------------------------
 
 """
 When building APIs, you normally use these specific HTTP methods to perform a specific action.

@@ -77,8 +77,11 @@ class YnabImportProgram():
       print(f'INFO: Exported file is in: {filepath_to_export_csv}')
       dfcopy_transform.to_csv(filepath_to_export_csv,index=False,index_label=False)
 
+    return(filename_to_export)
+
 
   def process_structure_change(self):
+    dict_transform = {}
     files = self.get_list_files()
 
     for filename in files:
@@ -103,16 +106,20 @@ class YnabImportProgram():
         dfcopy_transform = self.rename_df_columns(dfcopy)
 
         #Getting range date from excel to put in export file as .csv for import in YNAB
-        self.export_key_csv(dfcopy_transform,filename,".csv")
+        filename_to_export = self.export_key_csv(dfcopy_transform,filename,".csv")
 
-if __name__ == "__main__":
+        dict_transform[filename] = filename_to_export
 
-  # Running locally
-  print(root.DIR_DATA)
-  print(root.DIR_DATA_RAW)
+    return(dict_transform)
 
-  budget_obj = YnabImportProgram(root.DIR_DATA_RAW,root.DIR_DATA_ANALYTICS)
-  #budget_obj.process_encoding_by_file()
-  budget_obj.process_structure_change()
+# Running for api of FastApi, you have to comment main
+
+# Running locally from YnabImportProgram Class
+#if __name__ == "__main__":
+  # print(root.DIR_DATA)
+  # print(root.DIR_DATA_RAW)
+  # budget_obj = YnabImportProgram(root.DIR_DATA_RAW,root.DIR_DATA_ANALYTICS)
+  # #budget_obj.process_encoding_by_file()
+  # budget_obj.process_structure_change()
 
 
