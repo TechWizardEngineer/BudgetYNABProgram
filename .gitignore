@@ -3,7 +3,7 @@ app/data/raw/*
 app/data/analytics/*
 
 # MacOS
-.DS_Store
+*.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
