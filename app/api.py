@@ -13,6 +13,7 @@ Write a path operation function (like def root(): ... above).
 Run the development server (like uvicorn main:app --reload).
 """
 #from typing import Optional
+from importlib.resources import path
 import os
 import sys
 
@@ -25,12 +26,17 @@ import root
 from fastapi import FastAPI
 from typing import Optional
 from starlette.responses import FileResponse, HTMLResponse
+from pydantic import BaseModel
 import pandas as pd
 from budget_program import YnabImportProgram
-#import Model
+
 
 import datetime
 import json
+
+class YNABProgram(BaseModel):
+    path_data: str
+    path_export: str
 
 #create an app instance
 app_ynab = FastAPI(title="My Budget Program for YNAB")
@@ -62,7 +68,7 @@ async def process_structure_change():
     budget_obj = YnabImportProgram(root.DIR_DATA_RAW,root.DIR_DATA_ANALYTICS)
     return(budget_obj.process_structure_change())
 
-@app_ynab.get("/get-changed/{file_id}")
+@app_ynab.get("/get-changed-file/{file_id}")
 def verify_changed_by_file(file_id: str):
     path_data= root.DIR_DATA_RAW
     path_export = root.DIR_DATA_ANALYTICS
@@ -118,13 +124,16 @@ async def get_path_data():
 ## returns:
 ## Home land page
 ###---------------------------------------------------
-@app_ynab.post("/create-paths/")
-async def create_paths(path_data: Optional[str] = None,
-path_export: Optional[str] = None):
-    #Unless user change the input path of data AND export path, it will be from root
-    path_data= root.DIR_DATA_RAW
-    path_export = root.DIR_DATA_ANALYTICS
-    return({'INFO: Getting data from': [path_data, path_export]})
+# @app_ynab.post("/create-paths/")
+# async def create_paths(trial_path_data: str, trial_path_export: str):
+#     #Unless user change the input path of data AND export path, it will be from root
+#     if trial_path_data == root.DIR_DATA_RAW and trial_path_export == root.DIR_DATA_ANALYTICS:
+#         return {"Error":"This input and export path have been used before"}
+#     else:
+#         path_data = trial_path_data
+#         path_export = trial_path_export
+
+#     return({'path_data': path_data, 'path_export':path_export})
 
 ###---------------------------------------------------
 ## XXX
