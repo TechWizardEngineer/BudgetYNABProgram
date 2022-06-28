@@ -14,6 +14,9 @@ import root
 import re
 import chardet
 
+#Make a table with files info by date
+
+
 class YnabImportProgram():
   """
   :Date: 08-06-2022

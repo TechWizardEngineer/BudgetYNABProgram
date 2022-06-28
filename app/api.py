@@ -28,7 +28,7 @@ from typing import Optional
 from starlette.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel
 import pandas as pd
-from budget_program import YnabImportProgram
+from budget_import import YnabImportProgram
 
 
 import datetime
