@@ -24,19 +24,24 @@ sys.path.insert(1, ROOT_PATH)
 import root
 
 from fastapi import FastAPI
+from fastapi import APIRouter
 from typing import Optional
 from starlette.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel
 import pandas as pd
-from budget_import import YnabImportProgram
+from utils.budget_import import YnabImportProgram
 
 
 import datetime
 import json
 
+"""
 class YNABProgram(BaseModel):
     path_data: str
     path_export: str
+"""
+
+router = APIRouter()
 
 #create an app instance
 app_ynab = FastAPI(title="My Budget Program for YNAB")
@@ -48,7 +53,8 @@ app_ynab = FastAPI(title="My Budget Program for YNAB")
 ## returns:
 ## Home land page
 ###---------------------------------------------------
-@app_ynab.get("/")
+#@app_ynab.get("/")
+@router.get("/")
 async def read_root():
     return FileResponse('./resources/index.html')
 
@@ -59,7 +65,8 @@ async def read_root():
 ## returns:
 ## XXX
 ###---------------------------------------------------
-@app_ynab.get("/structure_change/")
+#@app_ynab.get("/structure_change/")
+@router.get("/structure_change/")
 async def process_structure_change():
     #Unless user change the input path of data AND export path, it will be from root
     path_data= root.DIR_DATA_RAW
@@ -68,7 +75,8 @@ async def process_structure_change():
     budget_obj = YnabImportProgram(root.DIR_DATA_RAW,root.DIR_DATA_ANALYTICS)
     return(budget_obj.process_structure_change())
 
-@app_ynab.get("/get-changed-file/{file_id}")
+#@app_ynab.get("/get-changed-file/{file_id}")
+@router.get("/get-changed-file/{file_id}")
 def verify_changed_by_file(file_id: str):
     path_data= root.DIR_DATA_RAW
     path_export = root.DIR_DATA_ANALYTICS
@@ -84,7 +92,8 @@ def verify_changed_by_file(file_id: str):
 ## returns:
 ## XXX
 ###---------------------------------------------------
-@app_ynab.get("/encoding/")
+#@app_ynab.get("/encoding/")
+@router.get("/encoding/")
 async def process_encoding():
     #Unless user change the input path of data AND export path, it will be from root
     path_data= root.DIR_DATA_RAW
@@ -93,7 +102,8 @@ async def process_encoding():
     budget_obj = YnabImportProgram(root.DIR_DATA_RAW,root.DIR_DATA_ANALYTICS)
     return(budget_obj.process_encoding_by_file())
 
-@app_ynab.get("/get-encoding/{file_id}")
+#@app_ynab.get("/get-encoding/{file_id}")
+@router.get("/get-encoding/{file_id}")
 def get_encoding_by_file(file_id: str):
     path_data= root.DIR_DATA_RAW
     path_export = root.DIR_DATA_ANALYTICS
@@ -110,7 +120,8 @@ def get_encoding_by_file(file_id: str):
 ## returns:
 ## Home land page
 ###---------------------------------------------------
-@app_ynab.get("/path-data/")
+#@app_ynab.get("/path-data/")
+@router.get("/path-data/")
 async def get_path_data():
     #Unless user change the input path of data AND export path, it will be from root
     path_data= root.DIR_DATA_RAW
