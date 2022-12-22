@@ -1,0 +1,6 @@
+version: '3'
+services:
+  fast-api-ynab:
+    build: ./
+    ports:
+      - "5002:80"
