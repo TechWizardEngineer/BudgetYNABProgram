@@ -4,3 +4,5 @@ services:
     build: ./
     ports:
       - "5002:80"
+    volumes:
+      - /Users/camilamv/BudgetYNABProgram/app/data/:/app/data/
