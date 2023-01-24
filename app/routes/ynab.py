@@ -14,9 +14,15 @@ Run the development server (like uvicorn main:app --reload).
 """
 #from typing import Optional
 
+#From Python
 from starlette.responses import FileResponse, HTMLResponse
-from pydantic import BaseModel
 from typing import Optional, Path
+
+# From Pydantic
+from pydantic import BaseModel
+from pydantic import Field
+
+# From FastAPI
 from fastapi import FastAPI
 from fastapi import APIRouter
 
@@ -36,12 +42,16 @@ import root
 
 from utils.budget_import import YnabImportProgram
 
-"""
+# Model to use later
 class FileRestructure(BaseModel):
-    file_id = str,
-    min_date = Optional[str] = None
-    max_data = Optional[str] = None
-"""
+    file_id = str = Field(
+        ...,
+        min_length=1,
+        max_length=50
+    )
+    min_date = Optional[str] = Field(default=None)
+    max_data = Optional[str] = Field(default=None)
+
 
 router = APIRouter()
 
