@@ -89,7 +89,8 @@ def verify_changed_by_file(
     file_id: str = Path(
     ...,
     title="File name when donwloaded from bank.",
-    description="This is the name of the file when downloaded from bank and with extension .txt. Example:640-212335-18_76.txt"
+    description="This is the name of the file when downloaded from bank and with extension .txt.",
+    example="640-212335-18_76.txt"
     )
 ):
     path_data= root.DIR_DATA_RAW
@@ -123,7 +124,8 @@ async def run_encoding():
 def get_encoding_by_file(file_id: str = Path(
     ...,
     title="File name when donwloaded from bank.",
-    description="This is the name of the file when downloaded from bank and with extension .txt. Example:640-212335-18_76.txt"
+    description="This is the name of the file when downloaded from bank and with extension .txt.",
+    example="640-212335-18_76.txt"
     )
 ):
     path_data= root.DIR_DATA_RAW
