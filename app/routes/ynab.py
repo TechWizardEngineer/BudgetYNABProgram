@@ -40,13 +40,13 @@ import root
 from utils.budget_import import YnabImportProgram
 
 # Model to use later
-class FileRestructure(BaseModel):
-    file_id = str = Field(
-        ...,
-        min_length=1,
-        max_length=50,
-        example="640-212335-18_76.txt"
-    )
+# class FileRestructure(BaseModel):
+#     file_id = str = Field(
+#         ...,
+#         min_length=1,
+#         max_length=50,
+#         example="640-212335-18_76.txt"
+#     )
 
 router = APIRouter()
 
