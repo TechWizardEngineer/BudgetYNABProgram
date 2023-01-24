@@ -13,7 +13,18 @@ Write a path operation function (like def root(): ... above).
 Run the development server (like uvicorn main:app --reload).
 """
 #from typing import Optional
+
+from starlette.responses import FileResponse, HTMLResponse
+from pydantic import BaseModel
+from typing import Optional, Path
+from fastapi import FastAPI
+from fastapi import APIRouter
+
 from importlib.resources import path
+import pandas as pd
+import datetime
+import json
+
 import os
 import sys
 
@@ -23,17 +34,7 @@ sys.path.insert(1, ROOT_PATH)
 
 import root
 
-from fastapi import FastAPI
-from fastapi import APIRouter
-from typing import Optional, Path
-from starlette.responses import FileResponse, HTMLResponse
-from pydantic import BaseModel
-import pandas as pd
 from utils.budget_import import YnabImportProgram
-
-
-import datetime
-import json
 
 """
 class YNABProgram(BaseModel):
@@ -82,7 +83,7 @@ async def process_structure_change(
     return(budget_obj.process_structure_change())
 
 #@app_ynab.get("/get-changed-file/{file_id}")
-@router.get("/get-changed-file/{file_id}")
+@router.get("/get-changed-file/detail/{file_id}")
 def verify_changed_by_file(file_id: str = Path(
     ...,
     min_length=1,
@@ -116,7 +117,7 @@ async def process_encoding():
     return(budget_obj.process_encoding_by_file())
 
 #@app_ynab.get("/get-encoding/{file_id}")
-@router.get("/get-encoding/{file_id}")
+@router.get("/get-encoding/detail/{file_id}")
 def get_encoding_by_file(file_id: str = Path(
     ...,
     min_length=1,
