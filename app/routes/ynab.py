@@ -40,13 +40,13 @@ import root
 from utils.budget_import import YnabImportProgram
 
 # Model to use later
-# class FileRestructure(BaseModel):
-#     file_id = str = Field(
-#         ...,
-#         min_length=1,
-#         max_length=50,
-#         example="640-212335-18_76.txt"
-#     )
+class FileRestructure(BaseModel):
+    file_id = str = Field(
+        ...,
+        min_length=1,
+        max_length=50,
+        example="640-212335-18_76.txt"
+    )
 
 router = APIRouter()
 
@@ -63,9 +63,7 @@ app_ynab = FastAPI(title="My Budget Program for YNAB")
 #@app_ynab.get("/")
 @router.get("/")
 async def home(
-    title="Home of API where is key info.",
-    description="This is the root of api where key information is connected to Notion Page"
-):
+    title="Home of API where is key info."):
     return FileResponse('./resources/index.html')
 
 ###---------------------------------------------------
@@ -77,10 +75,7 @@ async def home(
 ###---------------------------------------------------
 #@app_ynab.get("/structure_change/")
 @router.get("/structure_change/run")
-async def make_structure_change(
-    title="File of transactions has to bee in data/raw folder",
-    description="This is the process to change structure for YNAB program"
-):
+async def make_structure_change():
     #Unless user change the input path of data AND export path, it will be from root
     path_data= root.DIR_DATA_RAW
     path_export = root.DIR_DATA_ANALYTICS
@@ -93,8 +88,8 @@ async def make_structure_change(
 def verify_changed_by_file(
     file_id: str = Path(
     ...,
-    title="File name when donwloaded from bank",
-    description="This is the name of the file when downloaded from bank and with extension .txt. It's between 1 to 50 characters"
+    title="File name when donwloaded from bank.",
+    description="This is the name of the file when downloaded from bank and with extension .txt. Example:640-212335-18_76.txt"
     )
 ):
     path_data= root.DIR_DATA_RAW
@@ -127,8 +122,8 @@ async def run_encoding():
 @router.get("/enconding/detail/{file_id}")
 def get_encoding_by_file(file_id: str = Path(
     ...,
-    title="File name when donwloaded from bank",
-    description="This is the name of the file when downloaded from bank and with extension .txt. It's between 1 to 50 characters"
+    title="File name when donwloaded from bank.",
+    description="This is the name of the file when downloaded from bank and with extension .txt. Example:640-212335-18_76.txt"
     )
 ):
     path_data= root.DIR_DATA_RAW
