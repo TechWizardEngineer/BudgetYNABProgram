@@ -16,7 +16,7 @@ Run the development server (like uvicorn main:app --reload).
 
 #From Python
 from starlette.responses import FileResponse, HTMLResponse
-from typing import Optional, Path
+from typing import Optional
 
 # From Pydantic
 from pydantic import BaseModel
@@ -24,13 +24,12 @@ from pydantic import Field
 
 # From FastAPI
 from fastapi import FastAPI
+from fastapi import Path
 from fastapi import APIRouter
 
-from importlib.resources import path
 import pandas as pd
 import datetime
 import json
-
 import os
 import sys
 
@@ -94,11 +93,12 @@ async def make_structure_change(
 
 #@app_ynab.get("/get-changed-file/{file_id}")
 @router.get("/structure_change/detail/{file_id}")
-def verify_changed_by_file(file_id: str = Path(
+def verify_changed_by_file(
+    file_id: str = Path(
     ...,
     min_length=1,
     max_length=50,
-    example="640-212335-18_76.txt"
+    example="640-212335-18_76.txt",
     title="File name when donwloaded from bank",
     description="This is the name of the file when downloaded from bank and with extension .txt. It's between 1 to 50 characters"
     )
@@ -106,7 +106,9 @@ def verify_changed_by_file(file_id: str = Path(
     path_data= root.DIR_DATA_RAW
     path_export = root.DIR_DATA_ANALYTICS
 
-    budget_obj = YnabImportProgram(root.DIR_DATA_RAW,root.DIR_DATA_ANALYTICS)
+    budget_obj = YnabImportProgram(
+        root.DIR_DATA_RAW,
+        root.DIR_DATA_ANALYTICS)
     dict_transform = budget_obj.process_structure_change()
     return(dict_transform[file_id])
 
@@ -133,7 +135,7 @@ def get_encoding_by_file(file_id: str = Path(
     ...,
     min_length=1,
     max_length=50,
-    example="640-212335-18_76.txt"
+    example="640-212335-18_76.txt",
     title="File name when donwloaded from bank",
     description="This is the name of the file when downloaded from bank and with extension .txt. It's between 1 to 50 characters"
     )
