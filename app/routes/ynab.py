@@ -12,7 +12,13 @@ Write a path operation decorator (like @app.get("/")).
 Write a path operation function (like def root(): ... above).
 Run the development server (like uvicorn main:app --reload).
 """
-#from typing import Optional
+from importlib.resources import path
+import os
+import sys
+
+ROOT_PATH = os.path.dirname(
+    (os.sep).join(os.path.abspath(__file__).split(os.sep)))
+sys.path.insert(1, ROOT_PATH)
 
 #From Python
 from starlette.responses import FileResponse, HTMLResponse
@@ -30,26 +36,17 @@ from fastapi import APIRouter
 import pandas as pd
 import datetime
 import json
-import os
-import sys
-
-ROOT_PATH = os.path.dirname(
-    (os.sep).join(os.path.abspath(__file__).split(os.sep)))
-sys.path.insert(1, ROOT_PATH)
-
 import root
-
 from utils.budget_import import YnabImportProgram
 
 # Model to use later
-class FileRestructure(BaseModel):
-    file_id = str = Field(
-        ...,
-        min_length=1,
-        max_length=50,
-        example="640-212335-18_76.txt"
-    )
-
+# class FileRestructure(BaseModel):
+#     file_id = str = Field(
+#         ...,
+#         min_length=1,
+#         max_length=50,
+#         example="640-212335-18_76.txt"
+#     )
 
 router = APIRouter()
 
@@ -96,9 +93,6 @@ async def make_structure_change(
 def verify_changed_by_file(
     file_id: str = Path(
     ...,
-    min_length=1,
-    max_length=50,
-    example="640-212335-18_76.txt",
     title="File name when donwloaded from bank",
     description="This is the name of the file when downloaded from bank and with extension .txt. It's between 1 to 50 characters"
     )
@@ -133,9 +127,6 @@ async def run_encoding():
 @router.get("/enconding/detail/{file_id}")
 def get_encoding_by_file(file_id: str = Path(
     ...,
-    min_length=1,
-    max_length=50,
-    example="640-212335-18_76.txt",
     title="File name when donwloaded from bank",
     description="This is the name of the file when downloaded from bank and with extension .txt. It's between 1 to 50 characters"
     )
