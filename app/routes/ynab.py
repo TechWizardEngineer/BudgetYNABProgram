@@ -37,9 +37,10 @@ import root
 from utils.budget_import import YnabImportProgram
 
 """
-class YNABProgram(BaseModel):
-    path_data: str
-    path_export: str
+class FileRestructure(BaseModel):
+    file_id = str,
+    min_date = Optional[str] = None
+    max_data = Optional[str] = None
 """
 
 router = APIRouter()
