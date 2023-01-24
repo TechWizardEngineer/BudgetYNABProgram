@@ -89,8 +89,8 @@ def verify_changed_by_file(file_id: str = Path(
     ...,
     min_length=1,
     max_length=50,
-    title="File with structure changed",
-    description="This is the name of the file with structure change. It's between 1 to 50 characters"
+    title="File name when donwloaded from bank",
+    description="This is the name of the file when downloaded from bank and with extension .txt. It's between 1 to 50 characters"
     )
 ):
     path_data= root.DIR_DATA_RAW
@@ -123,8 +123,8 @@ def get_encoding_by_file(file_id: str = Path(
     ...,
     min_length=1,
     max_length=50,
-    title="File with structure changed",
-    description="This is the name of the file with structure change. It's between 1 to 50 characters"
+    title="File name when donwloaded from bank",
+    description="This is the name of the file when downloaded from bank and with extension .txt. It's between 1 to 50 characters"
     )
 ):
     path_data= root.DIR_DATA_RAW
