@@ -25,7 +25,7 @@ import root
 
 from fastapi import FastAPI
 from fastapi import APIRouter
-from typing import Optional
+from typing import Optional, Path
 from starlette.responses import FileResponse, HTMLResponse
 from pydantic import BaseModel
 import pandas as pd
@@ -55,7 +55,10 @@ app_ynab = FastAPI(title="My Budget Program for YNAB")
 ###---------------------------------------------------
 #@app_ynab.get("/")
 @router.get("/")
-async def read_root():
+async def read_root(
+    title="Reading root of YNAB App",
+    description="This is the root of api where key information is connected to Notion Page"
+):
     return FileResponse('./resources/index.html')
 
 ###---------------------------------------------------
@@ -67,7 +70,10 @@ async def read_root():
 ###---------------------------------------------------
 #@app_ynab.get("/structure_change/")
 @router.get("/structure_change/")
-async def process_structure_change():
+async def process_structure_change(
+    title="File of transactions has to bee in data/raw folder",
+    description="This is the process to change structure for YNAB program"
+):
     #Unless user change the input path of data AND export path, it will be from root
     path_data= root.DIR_DATA_RAW
     path_export = root.DIR_DATA_ANALYTICS
@@ -77,7 +83,14 @@ async def process_structure_change():
 
 #@app_ynab.get("/get-changed-file/{file_id}")
 @router.get("/get-changed-file/{file_id}")
-def verify_changed_by_file(file_id: str):
+def verify_changed_by_file(file_id: str = Path(
+    ...,
+    min_length=1,
+    max_length=50,
+    title="File with structure changed",
+    description="This is the name of the file with structure change. It's between 1 to 50 characters"
+    )
+):
     path_data= root.DIR_DATA_RAW
     path_export = root.DIR_DATA_ANALYTICS
 
@@ -104,7 +117,14 @@ async def process_encoding():
 
 #@app_ynab.get("/get-encoding/{file_id}")
 @router.get("/get-encoding/{file_id}")
-def get_encoding_by_file(file_id: str):
+def get_encoding_by_file(file_id: str = Path(
+    ...,
+    min_length=1,
+    max_length=50,
+    title="File with structure changed",
+    description="This is the name of the file with structure change. It's between 1 to 50 characters"
+    )
+):
     path_data= root.DIR_DATA_RAW
     path_export = root.DIR_DATA_ANALYTICS
 
