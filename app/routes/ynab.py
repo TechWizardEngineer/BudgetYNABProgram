@@ -47,10 +47,9 @@ class FileRestructure(BaseModel):
     file_id = str = Field(
         ...,
         min_length=1,
-        max_length=50
+        max_length=50,
+        example="640-212335-18_76.txt"
     )
-    min_date = Optional[str] = Field(default=None)
-    max_data = Optional[str] = Field(default=None)
 
 
 router = APIRouter()
@@ -99,6 +98,7 @@ def verify_changed_by_file(file_id: str = Path(
     ...,
     min_length=1,
     max_length=50,
+    example="640-212335-18_76.txt"
     title="File name when donwloaded from bank",
     description="This is the name of the file when downloaded from bank and with extension .txt. It's between 1 to 50 characters"
     )
@@ -133,6 +133,7 @@ def get_encoding_by_file(file_id: str = Path(
     ...,
     min_length=1,
     max_length=50,
+    example="640-212335-18_76.txt"
     title="File name when donwloaded from bank",
     description="This is the name of the file when downloaded from bank and with extension .txt. It's between 1 to 50 characters"
     )
