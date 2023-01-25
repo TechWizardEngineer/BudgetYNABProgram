@@ -1,7 +1,8 @@
-"""
-Using instructions from
-https://www.digitalocean.com/community/tutorials/how-to-remove-docker-images-containers-and-volumes
-"""
+###---------------------------------------------------
+## Using instructions from
+## https://www.digitalocean.com/community/tutorials/how-to-remove-docker-images-containers-and-volumes
+###---------------------------------------------------
+
 #1. Listing docker container activated
 echo "Step 1: This are the activated docker containers\n"
 docker ps -a
