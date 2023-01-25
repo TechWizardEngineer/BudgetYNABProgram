@@ -30,7 +30,8 @@ from pydantic import Field
 
 # From FastAPI
 from fastapi import FastAPI
-from fastapi import Path
+from fastapi import status
+from fastapi import Path, Body, Form
 from fastapi import APIRouter
 
 import pandas as pd
@@ -39,6 +40,7 @@ import json
 import root
 from utils.budget_import import YnabImportProgram
 
+## Space for possible models and make testing
 # Model to use later
 # class FileRestructure(BaseModel):
 #     file_id = str = Field(
@@ -47,6 +49,10 @@ from utils.budget_import import YnabImportProgram
 #         max_length=50,
 #         example="640-212335-18_76.txt"
 #     )
+
+class LoginOut(BaseModel):
+    username: str = Field(...,max_length=20,example="ynab_kamy")
+    message: str = Field(default="Login succesfully!")
 
 router = APIRouter()
 
@@ -61,9 +67,11 @@ app_ynab = FastAPI(title="My Budget Program for YNAB")
 ## Home land page
 ###---------------------------------------------------
 #@app_ynab.get("/")
-@router.get("/")
-async def home(
-    title="Home of API where is key info."):
+@router.get(
+    path="/",
+    status_code=status.HTTP_200_OK
+    )
+async def home():
     return FileResponse('./resources/index.html')
 
 ###---------------------------------------------------
@@ -74,7 +82,10 @@ async def home(
 ## XXX
 ###---------------------------------------------------
 #@app_ynab.get("/structure_change/")
-@router.get("/structure_change/run")
+@router.get(
+    path="/structure_change/run",
+    status_code=status.HTTP_200_OK
+    )
 async def make_structure_change():
     #Unless user change the input path of data AND export path, it will be from root
     path_data= root.DIR_DATA_RAW
@@ -84,7 +95,10 @@ async def make_structure_change():
     return(budget_obj.process_structure_change())
 
 #@app_ynab.get("/get-changed-file/{file_id}")
-@router.get("/structure_change/detail/{file_id}")
+@router.get(
+    path="/structure_change/detail/{file_id}",
+    status_code=status.HTTP_200_OK
+    )
 def verify_changed_by_file(
     file_id: str = Path(
     ...,
@@ -110,7 +124,10 @@ def verify_changed_by_file(
 ## XXX
 ###---------------------------------------------------
 #@app_ynab.get("/encoding/")
-@router.get("/encoding/run")
+@router.get(
+    path="/encoding/run",
+    status_code=status.HTTP_200_OK
+    )
 async def run_encoding():
     #Unless user change the input path of data AND export path, it will be from root
     path_data= root.DIR_DATA_RAW
@@ -120,7 +137,9 @@ async def run_encoding():
     return(budget_obj.process_encoding_by_file())
 
 #@app_ynab.get("/get-encoding/{file_id}")
-@router.get("/enconding/detail/{file_id}")
+@router.get(
+    path="/enconding/detail/{file_id}",
+    status_code=status.HTTP_200_OK)
 def get_encoding_by_file(file_id: str = Path(
     ...,
     title="File name when donwloaded from bank.",
@@ -144,7 +163,9 @@ def get_encoding_by_file(file_id: str = Path(
 ## Home land page
 ###---------------------------------------------------
 #@app_ynab.get("/path-data/")
-@router.get("/path/data")
+@router.get(
+    path="/path/data",
+    status_code=status.HTTP_200_OK)
 async def get_data_path():
     #Unless user change the input path of data AND export path, it will be from root
     path_data= root.DIR_DATA_RAW
@@ -152,30 +173,31 @@ async def get_data_path():
     return({'INFO: Getting data from and exporting into': [path_data, path_export]})
 
 ###---------------------------------------------------
-## Creating (POST) input path (raw data) and export path to execute YNAB Program
-## Params:
-## None
-## returns:
-## Home land page
-###---------------------------------------------------
-# @app_ynab.post("/create-paths/")
-# async def create_paths(trial_path_data: str, trial_path_export: str):
-#     #Unless user change the input path of data AND export path, it will be from root
-#     if trial_path_data == root.DIR_DATA_RAW and trial_path_export == root.DIR_DATA_ANALYTICS:
-#         return {"Error":"This input and export path have been used before"}
-#     else:
-#         path_data = trial_path_data
-#         path_export = trial_path_export
-
-#     return({'path_data': path_data, 'path_export':path_export})
-
-###---------------------------------------------------
 ## XXX
 ## Params:
 ## XXX
 ## returns:
 ## XXX
 ###---------------------------------------------------
+
+# Making login to test if works and project a vision for it in my app
+# Testing Forms
+
+@router.post(
+    path="/login",
+    response_model=LoginOut,
+    status_code=status.HTTP_200_OK)
+def login(
+    username: str = Form(...,example="ynab_kamy"),
+    password: str = Form(...,example="hisoykamy")
+    ):
+    print(f"Printing type of LoginOut")
+    print(type(LoginOut))
+
+    print(f"\nPrinting type of LoginOut(username=username)")
+    print(type(LoginOut(username=username)))
+
+    return LoginOut(username=username)
 
 """
 When building APIs, you normally use these specific HTTP methods to perform a specific action.
