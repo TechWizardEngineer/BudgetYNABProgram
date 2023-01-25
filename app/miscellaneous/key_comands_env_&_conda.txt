@@ -1,0 +1,32 @@
+###---------------------------------------------------
+## Using pipreqs
+## Link info: https://khuyentran1401.github.io/Efficient_Python_tricks_and_tools_for_data_scientists/Chapter6/env_management.html?highlight=pipreqs
+###---------------------------------------------------
+
+# For installing pireqs in env
+pip install pipreqs
+
+# For using pipreqs in project
+pipreqs .
+
+###---------------------------------------------------
+## Making envs with conda from start
+## Link info: <>
+###---------------------------------------------------
+
+# To check list of environments done using miniconda
+conda env list
+
+# To create an env with conda according to python version
+conda create --name ynab_app python=3.8
+
+# Activating environment
+conda activate ynab_app
+
+# To install requirements in env
+conda install --yes --file requirements.txt
+
+# If conda install command do not work, use the following:
+pip install -r requirements.txt
+
+
