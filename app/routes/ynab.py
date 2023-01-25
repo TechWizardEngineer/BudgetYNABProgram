@@ -27,11 +27,12 @@ from typing import Optional
 # From Pydantic
 from pydantic import BaseModel
 from pydantic import Field
+from pydantic import EmailStr
 
 # From FastAPI
 from fastapi import FastAPI
 from fastapi import status
-from fastapi import Path, Body, Form
+from fastapi import Path, Body, Form, Cookie, Header, UploadFile, File
 from fastapi import APIRouter
 
 import pandas as pd
@@ -40,8 +41,11 @@ import json
 import root
 from utils.budget_import import YnabImportProgram
 
+###---------------------------------------------------
+## Models
 ## Space for possible models and make testing
-# Model to use later
+###---------------------------------------------------
+
 # class FileRestructure(BaseModel):
 #     file_id = str = Field(
 #         ...,
@@ -54,6 +58,10 @@ class LoginOut(BaseModel):
     username: str = Field(...,max_length=20,example="ynab_kamy")
     message: str = Field(default="Login succesfully!")
 
+###---------------------------------------------------
+## Using router to organize app better and run Docker easier
+## If router is not used, you can use standard @app.get("/path/")
+###---------------------------------------------------
 router = APIRouter()
 
 #create an app instance
@@ -83,7 +91,7 @@ async def home():
 ###---------------------------------------------------
 #@app_ynab.get("/structure_change/")
 @router.get(
-    path="/structure_change/run",
+    path="/structure-change/run",
     status_code=status.HTTP_200_OK
     )
 async def make_structure_change():
@@ -96,7 +104,7 @@ async def make_structure_change():
 
 #@app_ynab.get("/get-changed-file/{file_id}")
 @router.get(
-    path="/structure_change/detail/{file_id}",
+    path="/structure-change/detail/{file_id}",
     status_code=status.HTTP_200_OK
     )
 def verify_changed_by_file(
@@ -180,9 +188,10 @@ async def get_data_path():
 ## XXX
 ###---------------------------------------------------
 
-# Making login to test if works and project a vision for it in my app
-# Testing Forms
-
+###---------------------------------------------------
+## Login
+## Testing login if can be used in app
+###---------------------------------------------------
 @router.post(
     path="/login",
     response_model=LoginOut,
@@ -199,6 +208,25 @@ def login(
 
     return LoginOut(username=username)
 
+###---------------------------------------------------
+## Cookies and Headers Parameters
+## Testing Cookies and Headers if can be used in app
+###---------------------------------------------------
+@router.post(
+    path="/contact",
+    status_code=status.HTTP_200_OK)
+def contact(
+    first_name: str,
+    last_name:str,
+    email: EmailStr = Form(...),
+    user_agent: Optional[str] = Header(default=None),
+    ads: Optional[str] = Cookie(default=None)
+):
+    print(f"\nPrinting type of user_agent related to Header Parameter")
+    print(type(user_agent))
+    return user_agent
+
+
 """
 When building APIs, you normally use these specific HTTP methods to perform a specific action.
 
@@ -212,13 +240,3 @@ DELETE: to delete data.
 So, in OpenAPI, each of the HTTP methods is called an "operation".
 We are going to call them "operations" too.
 """
-
-# I should make a BaseModel of importing file
-
-# #write a path decorator, according to operations
-# @app_ynab.get("/")
-# #write a path operation function
-# async def root():
-# #write return content
-#   return {'message':'Hello World'}
-
