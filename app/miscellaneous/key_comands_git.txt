@@ -1,4 +1,7 @@
-Notes:
+###---------------------------------------------------
+## Answering issue of reversing a commit that has not been pushed
+## Link info: https://stackoverflow.com/questions/51964552/delete-remote-branch-origin
+###---------------------------------------------------
 
 0 - Run git log first to check the current status of the commits
 
@@ -7,3 +10,25 @@ Notes:
 2 - Undo commit and unstage all files: git reset HEAD~
 
 3 - Undo the commit and completely remove all changes: git reset --hard HEAD~
+
+###---------------------------------------------------
+## To delete remote branch origin
+## Link info: https://stackoverflow.com/questions/51964552/delete-remote-branch-origin
+###---------------------------------------------------
+
+When you delete a branch with git branch -d branch_name you just delete the local one.
+Push will not affect the status of the remote, so origin/branch_name will remain.
+If you want to delete it you should do git push <remote_name> --delete <branch_name>
+as explained in the post suggested as duplicate.
+
+When someone else delete a branch in the remote (origin) a ref to it will be
+present in your local repository, so after a pull or fetch you will still
+see origin/branch_name. To delete this ref you have to fetch with --prune.
+
+git fetch --prune
+
+If you want you can also combine it inside the pull command.
+
+git pull --prune
+
+
