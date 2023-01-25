@@ -214,60 +214,12 @@ def login(
 
     return LoginOut(username=username)
 
-###---------------------------------------------------
-## File, UploadFile and HTTPException
-## Making get_upload file to copy file into raw and verify content
-## Using File, UploadFile and HTTPException when the content is not right
-###---------------------------------------------------
-@router.post(
-    path="/get-uploadfile",
-    status_code=status.HTTP_200_OK,
-    tags=["upload_file"]
-    )
-async def get_uploadfile(
-    upload_file: UploadFile = File(...)
-    ):
-    # Adding verification of file
-    if upload_file.content_type not in ["text/plain"]:
-        raise HTTPException(status.HTTP_404_NOT_FOUND,detail="Invalid document type, the format correct is .csv from bank")
-    else:
-        try:
-            upload_file_name = upload_file.filename
-            upload_file_format = upload_file.content_type
-            upload_file_size = round(len(upload_file.file.read())/1024)
-        except Exception:
-            return {"message": "There was an error uploading the file"}
-
-    return {
-        "Filename" : upload_file_name,
-        "Format" : upload_file_format,
-        "Size (kb)": upload_file_size
-    }
-
-###---------------------------------------------------
-## File, UploadFile and HTTPException
-## Making get_upload file to copy file into raw and verify content
-## Using File, UploadFile and HTTPException when the content is not right
-###---------------------------------------------------
-@router.post(
-    path="/process-uploadfile",
-    status_code=status.HTTP_200_OK,
-    tags=["upload_file"]
-    )
-async def process_uploadfile(
-    upload_file: UploadFile = File(...)
-    ):
-
-    # Adding verification of file
-    if upload_file.content_type not in ["text/plain"]:
-        raise HTTPException(status.HTTP_404_NOT_FOUND,detail="Invalid document type, the format correct is .csv from bank")
-    else:
-        try:
-            #Getting file
-            file_destination = root.DIR_DATA_TEST_RAW + upload_file.filename
-            with open(file_destination, "wb") as file_object:
-                shutil.copyfileobj(upload_file.file,file_object)
-                print(f"Copying was correct file '{upload_file.filename}' saved at '{file_destination}")
+""""
+Step 2: create a FastAPI "instance"
+Step 3: create a path operation
+Step 4: define the path operation function
+Step 5: return the content
+"""
 
             ## Process from file
             df_load = pd.read_csv(
