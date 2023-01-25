@@ -1,17 +1,3 @@
-""""
-Step 2: create a FastAPI "instance"
-Step 3: create a path operation
-Step 4: define the path operation function
-Step 5: return the content
-"""
-
-"""
-Import FastAPI.
-Create an app instance.
-Write a path operation decorator (like @app.get("/")).
-Write a path operation function (like def root(): ... above).
-Run the development server (like uvicorn main:app --reload).
-"""
 from importlib.resources import path
 import os
 import sys
@@ -31,7 +17,7 @@ from pydantic import Field
 # From FastAPI
 from fastapi import FastAPI
 from fastapi import status
-from fastapi import Path, Body, Form
+from fastapi import Path, Form
 from fastapi import APIRouter
 
 import pandas as pd
@@ -40,20 +26,19 @@ import json
 import root
 from utils.budget_import import YnabImportProgram
 
-## Space for possible models and make testing
-# Model to use later
-# class FileRestructure(BaseModel):
-#     file_id = str = Field(
-#         ...,
-#         min_length=1,
-#         max_length=50,
-#         example="640-212335-18_76.txt"
-#     )
 
+###---------------------------------------------------
+## Models
+## Space for possible models and make testing
+###---------------------------------------------------
 class LoginOut(BaseModel):
     username: str = Field(...,max_length=20,example="ynab_kamy")
     message: str = Field(default="Login succesfully!")
 
+###---------------------------------------------------
+## Using router to organize app better and run Docker easier
+## If router is not used, you can use standard @app.get("/path/")
+###---------------------------------------------------
 router = APIRouter()
 
 #create an app instance
@@ -66,7 +51,6 @@ app_ynab = FastAPI(title="My Budget Program for YNAB")
 ## returns:
 ## Home land page
 ###---------------------------------------------------
-#@app_ynab.get("/")
 @router.get(
     path="/",
     status_code=status.HTTP_200_OK
@@ -81,7 +65,6 @@ async def home():
 ## returns:
 ## XXX
 ###---------------------------------------------------
-#@app_ynab.get("/structure_change/")
 @router.get(
     path="/structure_change/run",
     status_code=status.HTTP_200_OK
@@ -94,7 +77,13 @@ async def make_structure_change():
     budget_obj = YnabImportProgram(root.DIR_DATA_RAW,root.DIR_DATA_ANALYTICS)
     return(budget_obj.process_structure_change())
 
-#@app_ynab.get("/get-changed-file/{file_id}")
+###---------------------------------------------------
+## XXX
+## Params:
+## XXX
+## returns:
+## XXX
+###---------------------------------------------------
 @router.get(
     path="/structure_change/detail/{file_id}",
     status_code=status.HTTP_200_OK
@@ -123,7 +112,6 @@ def verify_changed_by_file(
 ## returns:
 ## XXX
 ###---------------------------------------------------
-#@app_ynab.get("/encoding/")
 @router.get(
     path="/encoding/run",
     status_code=status.HTTP_200_OK
@@ -136,7 +124,13 @@ async def run_encoding():
     budget_obj = YnabImportProgram(root.DIR_DATA_RAW,root.DIR_DATA_ANALYTICS)
     return(budget_obj.process_encoding_by_file())
 
-#@app_ynab.get("/get-encoding/{file_id}")
+###---------------------------------------------------
+## XXX
+## Params:
+## XXX
+## returns:
+## XXX
+###---------------------------------------------------
 @router.get(
     path="/enconding/detail/{file_id}",
     status_code=status.HTTP_200_OK)
@@ -162,7 +156,6 @@ def get_encoding_by_file(file_id: str = Path(
 ## returns:
 ## Home land page
 ###---------------------------------------------------
-#@app_ynab.get("/path-data/")
 @router.get(
     path="/path/data",
     status_code=status.HTTP_200_OK)
@@ -173,16 +166,10 @@ async def get_data_path():
     return({'INFO: Getting data from and exporting into': [path_data, path_export]})
 
 ###---------------------------------------------------
-## XXX
-## Params:
-## XXX
-## returns:
-## XXX
+## Forms
+## Making login to test if works and project a vision for it in my app
+## Testing Forms
 ###---------------------------------------------------
-
-# Making login to test if works and project a vision for it in my app
-# Testing Forms
-
 @router.post(
     path="/login",
     response_model=LoginOut,
@@ -199,6 +186,21 @@ def login(
 
     return LoginOut(username=username)
 
+""""
+Step 2: create a FastAPI "instance"
+Step 3: create a path operation
+Step 4: define the path operation function
+Step 5: return the content
+"""
+
+"""
+Import FastAPI.
+Create an app instance.
+Write a path operation decorator (like @app.get("/")).
+Write a path operation function (like def root(): ... above).
+Run the development server (like uvicorn main:app --reload).
+"""
+
 """
 When building APIs, you normally use these specific HTTP methods to perform a specific action.
 
@@ -212,13 +214,3 @@ DELETE: to delete data.
 So, in OpenAPI, each of the HTTP methods is called an "operation".
 We are going to call them "operations" too.
 """
-
-# I should make a BaseModel of importing file
-
-# #write a path decorator, according to operations
-# @app_ynab.get("/")
-# #write a path operation function
-# async def root():
-# #write return content
-#   return {'message':'Hello World'}
-
