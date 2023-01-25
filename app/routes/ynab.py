@@ -186,6 +186,13 @@ def login(
 
     return LoginOut(username=username)
 
+
+###---------------------------------------------------
+## File, UploadFile and HTTPException
+## Making
+## Testing File, UploadFile and HTTPException
+###---------------------------------------------------
+
 """"
 Step 2: create a FastAPI "instance"
 Step 3: create a path operation
