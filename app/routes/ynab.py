@@ -56,6 +56,16 @@ app_ynab = FastAPI(title="My Budget Program for YNAB")
     status_code=status.HTTP_200_OK
     )
 async def home():
+    """
+    Home
+
+    This path operation shows home
+
+    Parameters:
+        -None
+
+    Returns a .html with key info
+    """
     return FileResponse('./resources/index.html')
 
 ###---------------------------------------------------
@@ -70,6 +80,18 @@ async def home():
     status_code=status.HTTP_200_OK
     )
 async def make_structure_change():
+    """
+    Structure change of file
+
+    This path operation realize structure change of imported file
+
+    Parameters:
+        -None
+
+    Returns a json with the i
+        -key (file_name from bank) : value (file_name after structure changed)
+    """
+
     #Unless user change the input path of data AND export path, it will be from root
     path_data= root.DIR_DATA_RAW
     path_export = root.DIR_DATA_ANALYTICS
