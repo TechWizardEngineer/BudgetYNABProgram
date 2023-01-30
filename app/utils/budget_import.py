@@ -98,7 +98,11 @@ class YnabImportProgram():
 
         filepath = str(self.path_data+"/"+filename)
         try:
-          df = pd.read_csv(filepath,sep="\t",encoding="ISO-8859-1",parse_dates=["FECHA"])
+          df = pd.read_csv(
+            filepath,
+            sep="\t",
+            encoding="ISO-8859-1",
+            parse_dates=["FECHA"])
           #print(df.columns) #checking columns names
           #print(df.nunique(axis=0)) #checking values
         except:
@@ -117,7 +121,7 @@ class YnabImportProgram():
 
 def process_file_structure_change(self):
   pass
-  return(dict_transform)
+
 
 # Running for api of FastApi, you have to comment main
 

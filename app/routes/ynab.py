@@ -224,28 +224,24 @@ def login(
     status_code=status.HTTP_200_OK,
     tags=["upload_file"]
     )
-def get_uploadfile(
+async def get_uploadfile(
     upload_file: UploadFile = File(...)
     ):
-    #//TODO, Adding verificatio of file and copy to data/raw
-
     # Adding verification of file
     if upload_file.content_type not in ["text/plain"]:
         raise HTTPException(status.HTTP_404_NOT_FOUND,detail="Invalid document type, the format correct is .csv from bank")
     else:
         try:
-            file_destination = "data/test/raw/" + upload_file.filename
-            with open(file_destination, "wb") as file_object:
-                shutil.copyfileobj(upload_file.file,file_object)
-                print(f"file '{upload_file.filename}' saved at '{file_destination}")
+            upload_file_name = upload_file.filename
+            upload_file_format = upload_file.content_type
+            upload_file_size = round(len(upload_file.file.read())/1024)
         except Exception:
             return {"message": "There was an error uploading the file"}
 
-
     return {
-        "Filename" : upload_file.filename,
-        "Format" : upload_file.content_type,
-        "Size (kb)": round(len(upload_file.file.read())/1024)
+        "Filename" : upload_file_name,
+        "Format" : upload_file_format,
+        "Size (kb)": upload_file_size
     }
 
 ###---------------------------------------------------
@@ -258,52 +254,37 @@ def get_uploadfile(
     status_code=status.HTTP_200_OK,
     tags=["upload_file"]
     )
-def process_uploadfile(
+async def process_uploadfile(
     upload_file: UploadFile = File(...)
     ):
-
-    result_path=""
-    split_name_correct=""
-
-    print(root.DIR_DATA_TEST)
-    print(root.DIR_DATA_TEST_RAW)
-    print(root.DIR_DATA_TEST_ANALYTICS)
 
     # Adding verification of file
     if upload_file.content_type not in ["text/plain"]:
         raise HTTPException(status.HTTP_404_NOT_FOUND,detail="Invalid document type, the format correct is .csv from bank")
     else:
         try:
-            file_path = "data/test/raw/" + upload_file.filename
-            #split_name_correct = upload_file.filename.split(".")[0]
-            #result_path = "data/test/analytics/"+split_name_correct+"_change.csv"
-
-            ## Open file
-            #with open(file_path,"wb") as file_upload:
+            #Getting file
+            file_destination = root.DIR_DATA_TEST_RAW + upload_file.filename
+            with open(file_destination, "wb") as file_object:
+                shutil.copyfileobj(upload_file.file,file_object)
+                print(f"Copying was correct file '{upload_file.filename}' saved at '{file_destination}")
 
             ## Process from file
-            #pd_result=pd.read_csv(file_path)
-            #print(pd_result.info())
-            #print(f'file path is {file_path}')
-            #print(f'split name correct is {split_name_correct}')
+            df_load = pd.read_csv(
+                file_destination,
+                sep="\t",
+                encoding="ISO-8859-1")
+            #print(df_load.info())
 
-            ## Saving file into corresponding folder
+            #//TODO Fix Adding structural change for a single file
 
-            #print(f'result_path is {result_path}')
-            #pd_result.to_csv(result_path)
+            filename=str(upload_file.filename.split(".")[0])+"_change.csv"
+            df_load.to_csv(root.DIR_DATA_TEST_ANALYTICS+filename)
+
         except Exception:
-            print(f'Exception : File in data/test/raw could not be processed')
-            #return {"message": "There was an error uploading the file"}
-
-    result_path = "data/test/analytics/"+str(upload_file.filename.split(".")[0])+"_change.csv"
-    file_name=str(upload_file.filename.split(".")[0])+"_change.csv"
-
-    #print("for return 1 "+file_path)
-    #print("for return 2 "+result_path)
-
-    #//TODO Fix problem of getting data
+            return{"Exception":"File in data/test/raw could not be processed"}
 
     return FileResponse(
-        path=result_path,
-        filename=file_name,
+        path=root.DIR_DATA_TEST_ANALYTICS+filename,
+        filename=filename,
         media_type="text/csv")
