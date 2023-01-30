@@ -1,6 +1,7 @@
 from importlib.resources import path
 import os
 import sys
+import shutil
 
 ROOT_PATH = os.path.dirname(
     (os.sep).join(os.path.abspath(__file__).split(os.sep)))
@@ -17,8 +18,10 @@ from pydantic import Field
 # From FastAPI
 from fastapi import FastAPI
 from fastapi import status
-from fastapi import Path, Form
+from fastapi import HTTPException
+from fastapi import Path, Form, UploadFile, File
 from fastapi import APIRouter
+from fastapi.responses import FileResponse
 
 import pandas as pd
 import datetime
@@ -53,9 +56,17 @@ app_ynab = FastAPI(title="My Budget Program for YNAB")
 ###---------------------------------------------------
 @router.get(
     path="/",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["Home"]
     )
 async def home():
+    """
+    Home
+    This path operation shows home
+    Parameters:
+        -None
+    Returns a .html with key info
+    """
     return FileResponse('./resources/index.html')
 
 ###---------------------------------------------------
@@ -67,15 +78,25 @@ async def home():
 ###---------------------------------------------------
 @router.get(
     path="/structure_change/run",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["files_structure_change"]
     )
 async def make_structure_change():
+    """
+    Structure change of file
+    This path operation realize structure change of imported file
+    Parameters:
+        -None
+    Returns a json with the i
+        -key (file_name from bank) : value (file_name after structure changed)
+    """
+
     #Unless user change the input path of data AND export path, it will be from root
     path_data= root.DIR_DATA_RAW
     path_export = root.DIR_DATA_ANALYTICS
 
     budget_obj = YnabImportProgram(root.DIR_DATA_RAW,root.DIR_DATA_ANALYTICS)
-    return(budget_obj.process_structure_change())
+    return(budget_obj.process_files_structure_change())
 
 ###---------------------------------------------------
 ## XXX
@@ -86,7 +107,8 @@ async def make_structure_change():
 ###---------------------------------------------------
 @router.get(
     path="/structure_change/detail/{file_id}",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["files_structure_change"]
     )
 def verify_changed_by_file(
     file_id: str = Path(
@@ -102,7 +124,7 @@ def verify_changed_by_file(
     budget_obj = YnabImportProgram(
         root.DIR_DATA_RAW,
         root.DIR_DATA_ANALYTICS)
-    dict_transform = budget_obj.process_structure_change()
+    dict_transform = budget_obj.process_files_structure_change()
     return(dict_transform[file_id])
 
 ###---------------------------------------------------
@@ -114,7 +136,8 @@ def verify_changed_by_file(
 ###---------------------------------------------------
 @router.get(
     path="/encoding/run",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["files_encoding"]
     )
 async def run_encoding():
     #Unless user change the input path of data AND export path, it will be from root
@@ -133,7 +156,9 @@ async def run_encoding():
 ###---------------------------------------------------
 @router.get(
     path="/enconding/detail/{file_id}",
-    status_code=status.HTTP_200_OK)
+    status_code=status.HTTP_200_OK,
+    tags=["files_encoding"]
+    )
 def get_encoding_by_file(file_id: str = Path(
     ...,
     title="File name when donwloaded from bank.",
@@ -158,7 +183,9 @@ def get_encoding_by_file(file_id: str = Path(
 ###---------------------------------------------------
 @router.get(
     path="/path/data",
-    status_code=status.HTTP_200_OK)
+    status_code=status.HTTP_200_OK,
+    tags=["files_path"]
+    )
 async def get_data_path():
     #Unless user change the input path of data AND export path, it will be from root
     path_data= root.DIR_DATA_RAW
@@ -173,7 +200,8 @@ async def get_data_path():
 @router.post(
     path="/login",
     response_model=LoginOut,
-    status_code=status.HTTP_200_OK)
+    status_code=status.HTTP_200_OK,
+    tags=["test_login"])
 def login(
     username: str = Form(...,example="ynab_kamy"),
     password: str = Form(...,example="hisoykamy")
@@ -186,31 +214,67 @@ def login(
 
     return LoginOut(username=username)
 
-""""
-Step 2: create a FastAPI "instance"
-Step 3: create a path operation
-Step 4: define the path operation function
-Step 5: return the content
-"""
+###---------------------------------------------------
+## File, UploadFile and HTTPException
+## Making get_upload file to copy file into raw and verify content
+## Using File, UploadFile and HTTPException when the content is not right
+###---------------------------------------------------
+@router.post(
+    path="/get-uploadfile",
+    status_code=status.HTTP_200_OK,
+    tags=["upload_file"]
+    )
+def get_uploadfile(
+    upload_file: UploadFile = File(...)
+    ):
+    #//TODO, Adding verificatio of file and copy to data/raw
 
-"""
-Import FastAPI.
-Create an app instance.
-Write a path operation decorator (like @app.get("/")).
-Write a path operation function (like def root(): ... above).
-Run the development server (like uvicorn main:app --reload).
-"""
+    # Adding verification of file
+    if upload_file.content_type not in ["text/plain"]:
+        raise HTTPException(status.HTTP_404_NOT_FOUND,detail="Invalid document type, the format correct is .csv from bank")
+    else:
+        try:
+            file_destination = "data/test/raw/" + upload_file.filename
+            with open(file_destination, "wb") as file_object:
+                shutil.copyfileobj(upload_file.file,file_object)
+                print(f"file '{upload_file.filename}' saved at '{file_destination}")
+        except Exception:
+            return {"message": "There was an error uploading the file"}
 
-"""
-When building APIs, you normally use these specific HTTP methods to perform a specific action.
 
-Normally you use:
+    return {
+        "Filename" : upload_file.filename,
+        "Format" : upload_file.content_type,
+        "Size (kb)": round(len(upload_file.file.read())/1024)
+    }
 
-POST: to create data.
-GET: to read data.
-PUT: to update data.
-DELETE: to delete data.
+###---------------------------------------------------
+## File, UploadFile and HTTPException
+## Making get_upload file to copy file into raw and verify content
+## Using File, UploadFile and HTTPException when the content is not right
+###---------------------------------------------------
+@router.post(
+    path="/process-uploadfile",
+    status_code=status.HTTP_200_OK,
+    tags=["upload_file"]
+    )
+def process_uploadfile(
+    upload_file: UploadFile = File(...)
+    ):
 
-So, in OpenAPI, each of the HTTP methods is called an "operation".
-We are going to call them "operations" too.
-"""
+    file_path = "data/test/raw/" + upload_file.filename
+
+    ## Process from file
+    pd_result=pd.read_csv(file_path)
+    print(f'file path is {file_path}')
+    split_name_correct = upload_file.filename.split(".")[0]
+    print(f'split name correct is {split_name_correct}')
+    result_path = "data/test/analytics/"+split_name_correct+"_change.csv"
+    print(f'result_path is {result_path}')
+    pd_result.to_csv(result_path)
+    ## Saving file into corresponding folder
+
+    return FileResponse(
+        path=result_path,
+        filename=str(split_name_correct+"_change.csv"),
+        media_type="text/csv")

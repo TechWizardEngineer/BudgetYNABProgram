@@ -83,7 +83,7 @@ class YnabImportProgram():
     return(filename_to_export)
 
 
-  def process_structure_change(self):
+  def process_files_structure_change(self):
     dict_transform = {}
     files = self.get_list_files()
 
@@ -114,6 +114,10 @@ class YnabImportProgram():
         dict_transform[filename] = filename_to_export
 
     return(dict_transform)
+
+def process_file_structure_change(self):
+  pass
+  return(dict_transform)
 
 # Running for api of FastApi, you have to comment main
 
