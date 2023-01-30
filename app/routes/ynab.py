@@ -67,6 +67,16 @@ async def home():
         -None
     Returns a .html with key info
     """
+    """
+    Home
+
+    This path operation shows home
+
+    Parameters:
+        -None
+
+    Returns a .html with key info
+    """
     return FileResponse('./resources/index.html')
 
 ###---------------------------------------------------

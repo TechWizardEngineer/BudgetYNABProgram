@@ -1,0 +1,8 @@
+###---------------------------------------------------
+## Find commands and ading xargs
+## Link info: <>
+###---------------------------------------------------
+find . -type <f,d> -name <"name_pattern"> | xargs rm -r
+
+# Example
+find . -type d -name '__pycache__'
