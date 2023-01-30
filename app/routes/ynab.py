@@ -262,19 +262,48 @@ def process_uploadfile(
     upload_file: UploadFile = File(...)
     ):
 
-    file_path = "data/test/raw/" + upload_file.filename
+    result_path=""
+    split_name_correct=""
 
-    ## Process from file
-    pd_result=pd.read_csv(file_path)
-    print(f'file path is {file_path}')
-    split_name_correct = upload_file.filename.split(".")[0]
-    print(f'split name correct is {split_name_correct}')
-    result_path = "data/test/analytics/"+split_name_correct+"_change.csv"
-    print(f'result_path is {result_path}')
-    pd_result.to_csv(result_path)
-    ## Saving file into corresponding folder
+    print(root.DIR_DATA_TEST)
+    print(root.DIR_DATA_TEST_RAW)
+    print(root.DIR_DATA_TEST_ANALYTICS)
+
+    # Adding verification of file
+    if upload_file.content_type not in ["text/plain"]:
+        raise HTTPException(status.HTTP_404_NOT_FOUND,detail="Invalid document type, the format correct is .csv from bank")
+    else:
+        try:
+            file_path = "data/test/raw/" + upload_file.filename
+            #split_name_correct = upload_file.filename.split(".")[0]
+            #result_path = "data/test/analytics/"+split_name_correct+"_change.csv"
+
+            ## Open file
+            #with open(file_path,"wb") as file_upload:
+
+            ## Process from file
+            #pd_result=pd.read_csv(file_path)
+            #print(pd_result.info())
+            #print(f'file path is {file_path}')
+            #print(f'split name correct is {split_name_correct}')
+
+            ## Saving file into corresponding folder
+
+            #print(f'result_path is {result_path}')
+            #pd_result.to_csv(result_path)
+        except Exception:
+            print(f'Exception : File in data/test/raw could not be processed')
+            #return {"message": "There was an error uploading the file"}
+
+    result_path = "data/test/analytics/"+str(upload_file.filename.split(".")[0])+"_change.csv"
+    file_name=str(upload_file.filename.split(".")[0])+"_change.csv"
+
+    #print("for return 1 "+file_path)
+    #print("for return 2 "+result_path)
+
+    #//TODO Fix problem of getting data
 
     return FileResponse(
         path=result_path,
-        filename=str(split_name_correct+"_change.csv"),
+        filename=file_name,
         media_type="text/csv")
