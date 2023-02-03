@@ -5,3 +5,4 @@ pandas==1.4.1
 pydantic==1.9.1
 starlette
 uvicorn==0.17.6
+python-multipart

@@ -28,7 +28,11 @@ docker volume ls
 echo ""
 
 echo "Step 5.2: Checking if images and volumes are up"
-docker images ls
+docker images
+echo ""
+
+echo "Step 5.3: Removing images according to list"
+docker rmi $(docker images -a -q)
 echo ""
 
 
