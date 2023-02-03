@@ -9,7 +9,7 @@ COPY /requirements.txt /app/requirements.txt
 RUN pip install --upgrade pip
 
 RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
-RUN pip install python-multipart
+#RUN pip install python-multipart
 
 COPY /data ./data
 
