@@ -132,5 +132,3 @@ def process_file_structure_change(self):
   # budget_obj = YnabImportProgram(root.DIR_DATA_RAW,root.DIR_DATA_ANALYTICS)
   # #budget_obj.process_encoding_by_file()
   # budget_obj.process_structure_change()
-
-

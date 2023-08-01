@@ -193,9 +193,7 @@ def get_encoding_by_file(file_id: str = Path(
 ###---------------------------------------------------
 @router.get(
     path="/path/data",
-    status_code=status.HTTP_200_OK,
-    tags=["files_path"]
-    )
+    status_code=status.HTTP_200_OK)
 async def get_data_path():
     #Unless user change the input path of data AND export path, it will be from root
     path_data= root.DIR_DATA_RAW
@@ -210,8 +208,7 @@ async def get_data_path():
 @router.post(
     path="/login",
     response_model=LoginOut,
-    status_code=status.HTTP_200_OK,
-    tags=["test_login"])
+    status_code=status.HTTP_200_OK)
 def login(
     username: str = Form(...,example="ynab_kamy"),
     password: str = Form(...,example="hisoykamy")
@@ -224,6 +221,13 @@ def login(
 
     return LoginOut(username=username)
 
+
+###---------------------------------------------------
+## File, UploadFile and HTTPException
+## Making
+## Testing File, UploadFile and HTTPException
+###---------------------------------------------------
+
 """"
 Step 2: create a FastAPI "instance"
 Step 3: create a path operation
@@ -231,22 +235,24 @@ Step 4: define the path operation function
 Step 5: return the content
 """
 
-            ## Process from file
-            df_load = pd.read_csv(
-                file_destination,
-                sep="\t",
-                encoding="ISO-8859-1")
-            #print(df_load.info())
+"""
+Import FastAPI.
+Create an app instance.
+Write a path operation decorator (like @app.get("/")).
+Write a path operation function (like def root(): ... above).
+Run the development server (like uvicorn main:app --reload).
+"""
 
-            #//TODO Fix Adding structural change for a single file
+"""
+When building APIs, you normally use these specific HTTP methods to perform a specific action.
 
-            filename=str(upload_file.filename.split(".")[0])+"_change.csv"
-            df_load.to_csv(root.DIR_DATA_TEST_ANALYTICS+filename)
+Normally you use:
 
-        except Exception:
-            return{"Exception":"File in data/test/raw could not be processed"}
+POST: to create data.
+GET: to read data.
+PUT: to update data.
+DELETE: to delete data.
 
-    return FileResponse(
-        path=root.DIR_DATA_TEST_ANALYTICS+filename,
-        filename=filename,
-        media_type="text/csv")
+So, in OpenAPI, each of the HTTP methods is called an "operation".
+We are going to call them "operations" too.
+"""

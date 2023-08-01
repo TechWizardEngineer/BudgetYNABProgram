@@ -1,0 +1,90 @@
+/* Reset some default styles */
+body, h1, h2, h3, h4, h5, h6, p, ul, li {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+/* Style for the navigation bar */
+nav {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+}
+
+.menu {
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.menu li {
+    margin-right: 20px;
+}
+
+.menu li:last-child {
+    margin-right: 0;
+}
+
+.menu li a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px;
+    transition: background-color 0.3s;
+}
+
+.menu li a:hover {
+    background-color: #555;
+}
+
+/* Style for the hamburger menu */
+.hamburger-menu {
+    display: none; /* Hide the hamburger menu by default on larger screens */
+}
+
+/* Media query for smaller screens */
+@media screen and (max-width: 768px) {
+    .menu {
+        display: none; /* Hide the navigation menu on smaller screens */
+    }
+
+    .hamburger-menu {
+        display: block; /* Show the hamburger menu on smaller screens */
+    }
+
+    /* Add your hamburger menu styles here, e.g., three horizontal lines */
+    .hamburger-menu::before,
+    .hamburger-menu::after,
+    .hamburger-menu {
+        content: '';
+        display: block;
+        width: 25px;
+        height: 3px;
+        background-color: #fff;
+        position: relative;
+    }
+
+    .hamburger-menu::before {
+        top: 8px;
+    }
+
+    .hamburger-menu::after {
+        top: -8px;
+    }
+}
+
+/* Style for the content area */
+.content {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+/* Add any additional CSS styles you need for the content area */
