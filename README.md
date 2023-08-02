@@ -15,17 +15,22 @@ Welcome to my Github project! This repository showcases my abilities and project
 6. [License](#license)
 7. [Contact](#contact)
 
-## Installation
+## Demo Gif
 
-[Describe how to install and set up your projects, including any prerequisites or dependencies]
+[List the key features of your projects]
+
+## Features
+
+[List the key features of your projects]
 
 ## Usage
 
 [Provide instructions on how to use and run the projects]
 
-## Features
+## Installation
 
-[List the key features of your projects]
+[Describe how to install and set up your projects, including any prerequisites or dependencies]
+
 
 ## Components List
 
