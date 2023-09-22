@@ -1,5 +1,5 @@
 # BudgetYNABProgram Project
-**[BudgetYNABProgram]**
+> This FastAPI app allows you to change the structure of transaction .txt file from Colombian Bank to accepted structure of YNAB App. 
 
 ## Description
 
