@@ -58,7 +58,7 @@ class YnabImportProgram():
     list_desire_columns=['Date','Oficina','Referencia','Memo','Amount']
     dfcopy_transform = dfcopy[list_desire_columns]
     print(f'PROCESS: Executing info() function')
-    print(dfcopy_transform.info())
+    #print(dfcopy_transform.info())
 
     return(dfcopy_transform)
 
@@ -99,8 +99,8 @@ class YnabImportProgram():
         filepath = str(self.path_data+"/"+filename)
         try:
           df = pd.read_csv(filepath,sep="\t",encoding="ISO-8859-1",parse_dates=["FECHA"])
-          print(df.columns) #checking columns names
-          print(df.nunique(axis=0)) #checking values
+          #print(df.columns) #checking columns names
+          #print(df.nunique(axis=0)) #checking values
         except:
           print("EXCEPTION: There is a problem with the reading of the file. It can be the encoding")
 

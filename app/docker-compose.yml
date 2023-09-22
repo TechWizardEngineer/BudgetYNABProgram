@@ -1,0 +1,8 @@
+version: '3'
+services:
+  fast-api-ynab:
+    build: ./
+    ports:
+      - "8225:80"
+    volumes:
+      - /Users/camilamv/BudgetYNABProgram/app/data/:/app/data/
