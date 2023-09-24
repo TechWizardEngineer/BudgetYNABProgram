@@ -3,7 +3,7 @@ import sys
 import pandas as pd
 import numpy as np
 from datetime import datetime
-from typing import List
+from typing import List, Dict
 
 ROOT_PATH = os.path.dirname(
     (os.sep).join(os.path.abspath(__file__).split(os.sep)))
@@ -40,7 +40,7 @@ class YnabImportProgram():
       print(f'INFO: The encoding of file for correct importation is {var_encoding}')
     return(var_encoding)
 
-  def process_encoding_by_file(self) -> dict:
+  def process_encoding_by_file(self) -> Dict[str,str]:
     dict_encoding_by_file = {}
     files = self.get_list_files()
     for filename in files:
@@ -77,19 +77,24 @@ class YnabImportProgram():
       filepath_to_export_excel = self.path_export+filename_to_export+".xlsx"
       sheet_name="_pfile_"+date_range_to_export
       print(f'INFO: Exported file is in: {filepath_to_export_excel}')
-      dfcopy_transform.to_excel(filepath_to_export_excel,sheet_name=sheet_name,index=False)
+      dfcopy_transform.to_excel(filepath_to_export_excel,
+                                sheet_name=sheet_name,
+                                index=False)
 
     if(ext == ".csv"):
       filepath_to_export_csv = self.path_export+filename_to_export+".csv"
       print(f'INFO: Exported file is in: {filepath_to_export_csv}')
-      dfcopy_transform.to_csv(filepath_to_export_csv,index=False,index_label=False)
+      dfcopy_transform.to_csv(filepath_to_export_csv,
+                              index=False,
+                              index_label=False)
 
     return(filename_to_export)
 
 
-  def process_structure_change(self) -> dict:
+  def process_structure_change(self) -> Dict[str, str]:
     dict_transform = {}
     files = self.get_list_files()
+    print(files)
 
     for filename in files:
       print(filename)
@@ -125,7 +130,6 @@ if __name__ == "__main__":
   print(root.DIR_DATA)
   print(root.DIR_DATA_RAW)
   budget_obj = YnabImportProgram(root.DIR_DATA_RAW,root.DIR_DATA_ANALYTICS)
-  #budget_obj.process_encoding_by_file()
   budget_obj.process_structure_change()
 
 
