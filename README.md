@@ -17,8 +17,7 @@ Welcome to my Github project! This repository showcases my abilities and project
 
 ## Demo Gif
 
-[![GitHub Readme Example](https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
-
+[![GitHub Readme Example](./docs/readme/Restructure-YNAB-App.png)](https://youtu.be/3h9fgKRt7tk)
 
 ## Features
 
