@@ -3,6 +3,9 @@ app/data/raw/*
 app/data/analytics/*
 app/data/test/*
 
+# Ignore project practice
+app/demo-practice/print_sample_code/*
+
 # MacOS
 *.DS_Store
 
