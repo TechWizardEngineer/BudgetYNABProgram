@@ -17,7 +17,8 @@ Welcome to my Github project! This repository showcases my abilities and project
 
 ## Demo Gif
 
-![Example App GIF](https://imgur.com/a/tf9TsbK)
+[![GitHub Readme Example](https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
+
 
 ## Features
 
