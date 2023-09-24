@@ -3,7 +3,7 @@
 
 ## Description
 
-Welcome to my Github project! This repository showcases my abilities and projects in [insert relevant domain or technology here]. I have worked hard to create a diverse range of projects that highlight my skills and expertise in [mention specific skills, technologies, or programming languages].
+This repository showcases my abilities and projects in [Python, FastApi and Docker]
 
 ## Table of Contents
 
