@@ -8,7 +8,7 @@ sys.path.insert(1, ROOT_PATH)
 
 #From Python
 from starlette.responses import FileResponse, HTMLResponse
-from typing import Optional
+from typing import List,Dict, Optional
 
 # From Pydantic
 from pydantic import BaseModel
@@ -79,7 +79,7 @@ async def home():
     path="/structure_change/run",
     status_code=status.HTTP_200_OK
     )
-async def make_structure_change():
+async def make_structure_change() -> Dict[str, str]:
     """
     Structure change of file
 
@@ -117,7 +117,7 @@ def verify_changed_by_file(
     description="This is the name of the file when downloaded from bank and with extension .txt.",
     example="640-212335-18_76.txt"
     )
-):
+) -> str :
     path_data= root.DIR_DATA_RAW
     path_export = root.DIR_DATA_ANALYTICS
 
@@ -138,7 +138,7 @@ def verify_changed_by_file(
     path="/encoding/run",
     status_code=status.HTTP_200_OK
     )
-async def run_encoding():
+async def run_encoding() -> Dict[str, str]:
     #Unless user change the input path of data AND export path, it will be from root
     path_data= root.DIR_DATA_RAW
     path_export = root.DIR_DATA_ANALYTICS
@@ -162,7 +162,7 @@ def get_encoding_by_file(file_id: str = Path(
     description="This is the name of the file when downloaded from bank and with extension .txt.",
     example="640-212335-18_76.txt"
     )
-):
+) -> str:
     path_data= root.DIR_DATA_RAW
     path_export = root.DIR_DATA_ANALYTICS
 
@@ -181,7 +181,7 @@ def get_encoding_by_file(file_id: str = Path(
 @router.get(
     path="/path/data",
     status_code=status.HTTP_200_OK)
-async def get_data_path():
+async def get_data_path() -> Dict[str, List[str]]:
     #Unless user change the input path of data AND export path, it will be from root
     path_data= root.DIR_DATA_RAW
     path_export = root.DIR_DATA_ANALYTICS

@@ -30,6 +30,15 @@ class YnabImportProgram():
     self.path_data = path_data
     self.path_export = path_export
 
+  # __str__ => Easy to read representation of class (Human consumption)
+  def __str__(self):
+    result = """({self.path_data},{self.path_export})"""
+    return(result.format(self=self))
+
+  # __repr__ => unambigous representation of class for debugging
+  def __repr__(self):
+    return '{self.__class__.__name__}({self.path_data},{self.path_export})'.format(self=self)
+
   def get_list_files(self) -> List[str]:
     files = os.listdir(self.path_data)
     return(files)
@@ -37,7 +46,7 @@ class YnabImportProgram():
   def get_encoding(self, filepath_complete: str) -> str:
     with open(filepath_complete, 'rb') as file:
       var_encoding = chardet.detect(file.read())['encoding']
-      print(f'INFO: The encoding of file for correct importation is {var_encoding}')
+      #print(f'INFO: The encoding of file for correct importation is {var_encoding}')
     return(var_encoding)
 
   def process_encoding_by_file(self) -> Dict[str,str]:
@@ -60,7 +69,7 @@ class YnabImportProgram():
     list_desire_columns=['Date','Oficina','Referencia','Memo','Amount']
     dfcopy_transform = dfcopy[list_desire_columns]
     mssg=f'PROCESS: Executing info() function'
-    print(mssg)
+    #print(mssg)
     #print(dfcopy_transform.info())
 
     return(dfcopy_transform)
@@ -69,14 +78,14 @@ class YnabImportProgram():
                      filename: str, ext: str) -> str:
 
     max_name, min_name = str(dfcopy_transform['Date'].max().date()), str(dfcopy_transform['Date'].min().date())
-    print(f'INFO: File is in range {min_name} to {max_name}')
+    #print(f'INFO: File is in range {min_name} to {max_name}')
     date_range_to_export = min_name+"_to_"+max_name
     filename_to_export = filename.split(".txt")[0]+"_pfile_"+date_range_to_export
 
     if(ext == ".xlsx"):
       filepath_to_export_excel = self.path_export+filename_to_export+".xlsx"
       sheet_name="_pfile_"+date_range_to_export
-      print(f'INFO: Exported file is in: {filepath_to_export_excel}')
+      #print(f'INFO: Exported file is in: {filepath_to_export_excel}')
       dfcopy_transform.to_excel(filepath_to_export_excel,
                                 sheet_name=sheet_name,
                                 index=False)
@@ -94,16 +103,15 @@ class YnabImportProgram():
   def process_structure_change(self) -> Dict[str, str]:
     dict_transform = {}
     files = self.get_list_files()
-    print(files)
 
     for filename in files:
-      print(filename)
+      #print(filename)
 
       match1 = re.search("-",str(filename))
       match2 = filename.split(".")[1]
 
       if match1 and match2=="txt":
-        print("INFO: Has condition 1 and assumes file is tabulated")
+        #print("INFO: Has condition 1 and assumes file is tabulated")
 
         filepath = str(self.path_data+"/"+filename)
         try:
@@ -111,7 +119,7 @@ class YnabImportProgram():
           df = pd.read_csv(filepath,sep="\t",encoding="ISO-8859-1",parse_dates=["FECHA"])
         except:
           mssg=f"EXCEPTION: There is a problem with the reading of the file. It can be the encoding"
-          print(mssg)
+          #print(mssg)
         #first changing the name of corresponding columns
         dfcopy = df.copy()
         dfcopy_transform = self.rename_df_columns(dfcopy)
@@ -127,9 +135,10 @@ class YnabImportProgram():
 
 # Running locally from YnabImportProgram Class
 if __name__ == "__main__":
-  print(root.DIR_DATA)
-  print(root.DIR_DATA_RAW)
+  #print(root.DIR_DATA)
+  #print(root.DIR_DATA_RAW)
   budget_obj = YnabImportProgram(root.DIR_DATA_RAW,root.DIR_DATA_ANALYTICS)
-  budget_obj.process_structure_change()
+  print(budget_obj)
+  #budget_obj.process_structure_change()
 
 
