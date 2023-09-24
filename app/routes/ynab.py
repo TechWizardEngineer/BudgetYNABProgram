@@ -53,7 +53,8 @@ app_ynab = FastAPI(title="My Budget Program for YNAB")
 ###---------------------------------------------------
 @router.get(
     path="/",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["default"]
     )
 async def home():
     """
@@ -77,7 +78,8 @@ async def home():
 ###---------------------------------------------------
 @router.get(
     path="/structure_change/run",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=["schema_for_ynab"]
     )
 async def make_structure_change() -> Dict[str, str]:
     """
@@ -108,7 +110,8 @@ async def make_structure_change() -> Dict[str, str]:
 ###---------------------------------------------------
 @router.get(
     path="/structure_change/detail/{file_id}",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=['schema_for_ynab']
     )
 def verify_changed_by_file(
     file_id: str = Path(
@@ -136,7 +139,8 @@ def verify_changed_by_file(
 ###---------------------------------------------------
 @router.get(
     path="/encoding/run",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_200_OK,
+    tags=['files_details']
     )
 async def run_encoding() -> Dict[str, str]:
     #Unless user change the input path of data AND export path, it will be from root
@@ -155,7 +159,9 @@ async def run_encoding() -> Dict[str, str]:
 ###---------------------------------------------------
 @router.get(
     path="/enconding/detail/{file_id}",
-    status_code=status.HTTP_200_OK)
+    status_code=status.HTTP_200_OK,
+    tags=['files_details']
+    )
 def get_encoding_by_file(file_id: str = Path(
     ...,
     title="File name when donwloaded from bank.",
@@ -180,7 +186,9 @@ def get_encoding_by_file(file_id: str = Path(
 ###---------------------------------------------------
 @router.get(
     path="/path/data",
-    status_code=status.HTTP_200_OK)
+    status_code=status.HTTP_200_OK,
+    tags=['data_details']
+    )
 async def get_data_path() -> Dict[str, List[str]]:
     #Unless user change the input path of data AND export path, it will be from root
     path_data= root.DIR_DATA_RAW
