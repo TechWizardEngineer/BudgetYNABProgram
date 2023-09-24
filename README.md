@@ -17,7 +17,7 @@ Welcome to my Github project! This repository showcases my abilities and project
 
 ## Demo Gif
 
-[List the key features of your projects]
+![docs/readme/Git_YNAB_app.gif]
 
 ## Features
 
