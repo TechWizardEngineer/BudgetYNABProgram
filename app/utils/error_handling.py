@@ -4,6 +4,9 @@ import sys
 class WrongOsError(Exception):
     pass
 
+def encoding_error():
+    mssg=f"EXCEPTION: There is a problem with the reading of the file. It can be the encoding"
+    print(mssg)
 
 def windows_interaction():
     if not sys.platform.startswith("win"):
