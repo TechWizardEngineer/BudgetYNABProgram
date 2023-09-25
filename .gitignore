@@ -5,6 +5,8 @@ app/data/test/*
 
 # Ignore project practice
 app/demo-practice/print_sample_code/*
+app/demo-practice/debug1/*
+app/demo-practice/ds/*
 
 # MacOS
 *.DS_Store
