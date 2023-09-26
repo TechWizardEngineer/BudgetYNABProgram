@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 from typing import List, Dict
+import logging
 from utils.error_handling import WrongOsError
 from utils.error_handling import macos_interaction, encoding_error
 
