@@ -5,20 +5,25 @@ import numpy as np
 from datetime import datetime
 from typing import List, Dict
 import logging
+import logging.config
+import yaml
 from utils.error_handling import WrongOsError
 from utils.error_handling import macos_interaction, encoding_error
-
-ROOT_PATH = os.path.dirname(
-    (os.sep).join(os.path.abspath(__file__).split(os.sep)))
-sys.path.insert(1, ROOT_PATH)
-
-import root
-
 # Processing files
 import re
 import chardet
 
-#Make a table with files info by date
+ROOT_PATH = os.path.dirname(
+    (os.sep).join(os.path.abspath(__file__).split(os.sep)))
+sys.path.insert(1, ROOT_PATH)
+import root
+
+#Logger configuration
+with open("./logging/config.yaml",'r') as f:
+  config = yaml.safe_load(f.read())
+  logging.config.dictConfig(config)
+
+logger = logging.getLogger(__name__)
 
 
 class YnabImportProgram():
@@ -46,13 +51,14 @@ class YnabImportProgram():
     try:
       macos_interaction()
     except WrongOsError as error:
-      print(error)
+      #print(error)
+      logger.error(ERROR, error)
     else:
-      print("👏🏽, Now work can be done. No problem :)")
-      # with open("file.log") as log_file:
-      #   print(log_file.read())
+      #print("👏🏽, Now work can be done. No problem :)")
+      logger.info("Now work can be done. No problem")
     finally:
-      print("🧼 Cleaning up despite any execeptions.")
+      #print("🧼 Cleaning up despite any execeptions.")
+      logger.debug("Cleaning up despite any execeptions.")
 
   def get_list_files(self) -> List[str]:
     files = os.listdir(self._path_data)
@@ -61,7 +67,6 @@ class YnabImportProgram():
   def get_encoding(self, filepath_complete: str) -> str:
     with open(filepath_complete, 'rb') as file:
       var_encoding = chardet.detect(file.read())['encoding']
-      #print(f'INFO: The encoding of file for correct importation is {var_encoding}')
     return(var_encoding)
 
   def process_encoding_by_file(self) -> Dict[str,str]:
@@ -76,6 +81,7 @@ class YnabImportProgram():
         filepath_complete=str(self._path_data+"/"+filename)
         #Use get_encoding function and filling dictionary
         dict_encoding_by_file[filename] = self.get_encoding(filepath_complete)
+        logger.info("Encoding of files was done")
     return(dict_encoding_by_file)
 
   def rename_df_columns(self, dfcopy: pd.DataFrame) -> pd.DataFrame:
@@ -87,8 +93,8 @@ class YnabImportProgram():
     list_desire_columns=['Date','Oficina','Referencia','Memo','Amount']
 
     dfcopy_transform = dfcopy[list_desire_columns]
-    mssg=f'PROCESS: Executing info() function'
 
+    logger.info("Rename of colum was done")
     return(dfcopy_transform)
 
   def export_key_csv(self, dfcopy_transform: pd.DataFrame,
@@ -96,21 +102,24 @@ class YnabImportProgram():
 
     max_name, min_name = str(dfcopy_transform['Date'].max().date()),str(dfcopy_transform['Date'].min().date())
 
-    print(f'INFO: File is in range {min_name} to {max_name}')
+    #print(f'INFO: File is in range {min_name} to {max_name}')
+    logger.info(f'File is in range {min_name} to {max_name}')
     date_range_to_export = min_name+"_to_"+max_name
     filename_to_export = filename.split(".txt")[0]+"_pfile_"+date_range_to_export
 
     if(ext == ".xlsx"):
       filepath_to_export_excel = self._path_export+filename_to_export+".xlsx"
       sheet_name="_pfile_"+date_range_to_export
-      print(f'INFO: Exported file is in: {filepath_to_export_excel}')
+      #print(f'INFO: Exported file is in: {filepath_to_export_excel}')
+      logger.info(f'Exported file is in: {filepath_to_export_excel}')
       dfcopy_transform.to_excel(filepath_to_export_excel,
                                 sheet_name=sheet_name,
                                 index=False)
 
     if(ext == ".csv"):
       filepath_to_export_csv = self._path_export+filename_to_export+".csv"
-      print(f'INFO: Exported file is in: {filepath_to_export_csv}')
+      #print(f'INFO: Exported file is in: {filepath_to_export_csv}')
+      logger.info(f'Exported file is in: {filepath_to_export_csv}')
       dfcopy_transform.to_csv(filepath_to_export_csv,
                               index=False,
                               index_label=False)
@@ -134,10 +143,12 @@ class YnabImportProgram():
           df = pd.read_csv(filepath,sep="\t",
                            encoding="ISO-8859-1",
                            parse_dates=["FECHA"])
-        except Exception:
+        except Exception as e:
           encoding_error()
+          logger.critical(CRITICAL)
         finally:
-          print("🐧 Correct reading of file with ISO encoding")
+          #print("🐧 Correct reading of file with ISO encoding")
+          logger.info("🐧 Correct reading of file with ISO encoding")
 
         #first changing the name of corresponding columns
         dfcopy = df.copy()
@@ -148,6 +159,7 @@ class YnabImportProgram():
 
         #Populating Dict[str, str]
         dict_transform[filename] = filename_to_export
+        logger.info("Process was done")
 
     return(dict_transform)
 
@@ -156,16 +168,14 @@ class YnabImportProgram():
 # Running for api of FastApi, you have to comment main
 if __name__ == "__main__":
   print(root.DIR_DATA)
-  print(root.DIR_DATA_RAW)
-  print(root.DIR_DATA_RAW_TEST)
-
-
-  #budget_obj = YnabImportProgram(root.DIR_DATA_RAW,root.DIR_DATA_ANALYTICS)
-  #budget_obj.verify_running_platform()
+  # print(root.DIR_DATA_RAW)
+  # print(root.DIR_DATA_RAW_TEST)
+  budget_obj = YnabImportProgram(root.DIR_DATA_RAW,root.DIR_DATA_ANALYTICS)
+  budget_obj.verify_running_platform()
   #print(budget_obj)
   #print(budget_obj.__str__)
   #print("\n")
   #print(budget_obj.__repr__)
-  #budget_obj.process_structure_change()
+  budget_obj.process_structure_change()
 
 

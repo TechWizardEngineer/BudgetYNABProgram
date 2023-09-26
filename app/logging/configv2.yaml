@@ -1,0 +1,49 @@
+version: 1
+formatters:
+  simple:
+    format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+
+handlers:
+  error_critical_file:
+    class: logging.FileHandler
+    level: ERROR
+    formatter: simple
+    filename: ./app/data/logs/error_critical.log
+
+  warning_debug_file:
+    class: logging.FileHandler
+    level: WARNING
+    formatter: simple
+    filename: ./app/data/logs/warning_debug.log
+
+  info_file:
+    class: logging.FileHandler
+    level: INFO
+    formatter: simple
+    filename: ./app/data/logs/info.log
+
+console:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: simple
+    stream: ext://sys.stdout
+
+loggers:
+  error_critical_logger:
+    level: ERROR
+    handlers: [error_critical_file, console]
+    propagate: no
+
+  warning_debug_logger:
+    level: WARNING
+    handlers: [warning_debug_file, console]
+    propagate: no
+
+  info_logger:
+    level: INFO
+    handlers: [info_file, console]
+    propagate: no
+
+root:
+  level: DEBUG
+  handlers: [console]
