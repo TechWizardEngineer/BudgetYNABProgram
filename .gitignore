@@ -7,6 +7,7 @@ app/data/test/*
 app/demo-practice/print_sample_code/*
 app/demo-practice/debug1/*
 app/demo-practice/ds/*
+app/demo-practice/logging/*
 
 # MacOS
 *.DS_Store
