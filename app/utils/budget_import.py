@@ -50,9 +50,9 @@ class YnabImportProgram():
   def verify_running_platform(self):
     try:
       macos_interaction()
-    except WrongOsError as error:
+    except WrongOsError:
       #print(error)
-      logger.error(ERROR, error)
+      logger.error("Exception occured", exc_info=True)
     else:
       #print("👏🏽, Now work can be done. No problem :)")
       logger.info("Now work can be done. No problem")
@@ -67,6 +67,12 @@ class YnabImportProgram():
   def get_encoding(self, filepath_complete: str) -> str:
     with open(filepath_complete, 'rb') as file:
       var_encoding = chardet.detect(file.read())['encoding']
+
+      #assert to debug
+      assert isinstance(var_encoding,str) and var_encoding=="ISO-8859-1"
+
+      if var_encoding != "ISO-8859-1":
+        raise ValueError("EXCEPTION: Problem reading file. It can be the encoding")
     return(var_encoding)
 
   def process_encoding_by_file(self) -> Dict[str,str]:
@@ -140,12 +146,12 @@ class YnabImportProgram():
         #print("INFO: Has condition 1 and assumes file is tabulated")
         filepath = str(self._path_data+"/"+filename)
         try:
+          var_encoding = self.get_encoding(filepath)
           df = pd.read_csv(filepath,sep="\t",
                            encoding="ISO-8859-1",
                            parse_dates=["FECHA"])
-        except Exception as e:
-          encoding_error()
-          logger.critical(CRITICAL)
+        except ValueError as e:
+          logger.critical(e)
         finally:
           #print("🐧 Correct reading of file with ISO encoding")
           logger.info("🐧 Correct reading of file with ISO encoding")
