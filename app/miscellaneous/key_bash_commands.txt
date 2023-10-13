@@ -6,3 +6,10 @@ find . -type <f,d> -name <"name_pattern"> | xargs rm -r
 
 # Example
 find . -type d -name '__pycache__'
+
+###---------------------------------------------------
+## To remove conda env
+## Link info: <>
+###---------------------------------------------------
+
+conda env list | awk '$1 ~ /^poc-/ {print $1}' | xargs -I {} conda env remove -n {}

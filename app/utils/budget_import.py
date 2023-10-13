@@ -12,6 +12,7 @@ from utils.error_handling import macos_interaction, encoding_error
 # Processing files
 import re
 import chardet
+from pathlib import Path
 
 ROOT_PATH = os.path.dirname(
     (os.sep).join(os.path.abspath(__file__).split(os.sep)))
@@ -19,12 +20,13 @@ sys.path.insert(1, ROOT_PATH)
 import root
 
 #Logger configuration
-with open("./logging/config.yaml",'r') as f:
-  config = yaml.safe_load(f.read())
-  logging.config.dictConfig(config)
+log_config_path = "/app/logging/" +"config.yaml"
+
+with open(log_config_path,'r') as f:
+    config = yaml.safe_load(f.read())
+    logging.config.dictConfig(config)
 
 logger = logging.getLogger(__name__)
-
 
 class YnabImportProgram():
   """
@@ -172,16 +174,17 @@ class YnabImportProgram():
 
 # Running locally from YnabImportProgram Class
 # Running for api of FastApi, you have to comment main
-if __name__ == "__main__":
-  print(root.DIR_DATA)
-  # print(root.DIR_DATA_RAW)
-  # print(root.DIR_DATA_RAW_TEST)
-  budget_obj = YnabImportProgram(root.DIR_DATA_RAW,root.DIR_DATA_ANALYTICS)
-  budget_obj.verify_running_platform()
-  #print(budget_obj)
-  #print(budget_obj.__str__)
-  #print("\n")
-  #print(budget_obj.__repr__)
-  budget_obj.process_structure_change()
+
+# if __name__ == "__main__":
+#   print(root.DIR_DATA)
+#   # print(root.DIR_DATA_RAW)
+#   # print(root.DIR_DATA_RAW_TEST)
+#   budget_obj = YnabImportProgram(root.DIR_DATA_RAW,root.DIR_DATA_ANALYTICS)
+#   budget_obj.verify_running_platform()
+#   #print(budget_obj)
+#   #print(budget_obj.__str__)
+#   #print("\n")
+#   #print(budget_obj.__repr__)
+#   budget_obj.process_structure_change()
 
 

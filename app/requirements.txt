@@ -1,8 +1,11 @@
-chardet==4.0.0
-fastapi==0.89.1
-numpy==1.22.2
-pandas==1.4.1
-pydantic==1.9.1
+chardet
+fastapi
+numpy
+pandas
+pydantic
 starlette
-uvicorn==0.17.6
+uvicorn
 python-multipart
+pipreqs
+pytest
+pyyaml
