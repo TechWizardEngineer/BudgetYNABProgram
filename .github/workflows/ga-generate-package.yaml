@@ -1,0 +1,11 @@
+name: Generate Package
+run-name: ${{ github.actor }} to workable demo
+on:
+  push:
+jobs:
+  Paackage-Artifact:
+    runs-on: ubuntu-latest
+
+  steps:
+    - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+
