@@ -11,6 +11,10 @@ jobs:
   Paackage-Artifact:
     runs-on: ubuntu-latest
 
+    env:
+      CR_PAT: ${{ secrets.CR_PAT }}
+      GITHUB_REPOSITORY: ${{ github.repository }}
+
     steps:
       - name: Checking job variables
         run: |
@@ -20,4 +24,11 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4.1.1
 
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+      - name: Build
+        run: |
+          docker build -t ynab-app-artifact:latest app/
+          repository_lowercase=$(echo "${{ env.GITHUB_REPOSITORY }}" | tr '[:upper:]' '[:lower:]')
+          docker tag ynab-app-artifact:latest ghcr.io/$repository_lowercase/ynab-app-artifact:latest
+
+      # - name: Deploy
+      #   run: |
