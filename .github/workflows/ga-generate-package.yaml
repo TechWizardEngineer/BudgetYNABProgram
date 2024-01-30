@@ -1,5 +1,5 @@
 name: Generate Package
-run-name: ${{ github.actor }} to workable demo
+run-name: CI/CD for Artifact
 
 on: [push]
 
@@ -30,5 +30,8 @@ jobs:
           repository_lowercase=$(echo "${{ env.GITHUB_REPOSITORY }}" | tr '[:upper:]' '[:lower:]')
           docker tag ynab-app-artifact:latest ghcr.io/$repository_lowercase/ynab-app-artifact:latest
 
-      # - name: Deploy
-      #   run: |
+      - name: Deploy
+        run: |
+          echo $CR_PAT | docker login ghcr.io -u USERNAME --password-stdin
+          repository_lowercase=$(echo "${{ env.GITHUB_REPOSITORY }}" | tr '[:upper:]' '[:lower:]')
+          docker push ghcr.io/$repository_lowercase/ynab-app-artifact:latest
